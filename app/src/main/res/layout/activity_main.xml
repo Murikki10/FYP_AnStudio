@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/root_layout"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:ignore="ExtraText">
+
+    <!-- 應用標誌 -->
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/home"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="?attr/actionBarSize"/>
+
+    <!-- 歡迎信息 -->
+
+    <!-- 底部導航欄 -->
+
+    <TextView
+        android:id="@+id/welcomeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logo"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:text="Welcome to the AI-Powered Sports Platform"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:padding="10dp">
+
+        <!-- 開始訓練圖標 -->
+        <ImageButton
+            android:id="@+id/startTrainingButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/home"
+
+            android:background="?attr/selectableItemBackground"
+            android:padding="10dp"
+        />
+
+        <!-- 加入社區圖標 -->
+        <ImageButton
+            android:id="@+id/communityButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/home"
+
+            android:background="?attr/selectableItemBackground"
+            android:padding="10dp"
+        />
+
+        <!-- 管理比賽圖標 -->
+        <ImageButton
+            android:id="@+id/competitionButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/home"
+
+            android:background="?attr/selectableItemBackground"
+            android:padding="10dp"
+        />
+
+        <!-- 個人頁面圖標 -->
+        <ImageButton
+            android:id="@+id/profileIcon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/home"
+
+            android:background="?attr/selectableItemBackground"
+            android:padding="10dp"
+        />
+
+    </LinearLayout>
+
+</RelativeLayout>
