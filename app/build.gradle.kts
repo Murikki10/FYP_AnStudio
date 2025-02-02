@@ -55,4 +55,8 @@ dependencies {
     // AndroidX
     implementation (libs.appcompat.v161)
     implementation (libs.constraintlayout.v214)
+
+    implementation (libs.circleimageview)
+    implementation (libs.glide)
+    annotationProcessor (libs.compiler)
 }

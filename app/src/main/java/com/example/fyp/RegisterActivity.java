@@ -85,7 +85,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         // 設置 Snackbar 樣式
         View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(getResources().getColor(R.color.red_500));
+        snackbarView.setBackgroundColor(getResources().getColor(R.color.red));
         TextView textView = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
         textView.setTextColor(Color.WHITE);
         textView.setTextSize(16);

@@ -16,4 +16,12 @@ public class UserData {
     public String getFirstName() {
         return firstName;
     }
+
+    @SerializedName("email")
+    private String email;
+
+    public String getEmail() {
+        return email;
+    }
+
 }

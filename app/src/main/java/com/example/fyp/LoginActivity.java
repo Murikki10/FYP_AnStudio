@@ -1,164 +1,124 @@
 package com.example.fyp;
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
+import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.textfield.TextInputLayout;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.gson.Gson;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
-    private TextInputLayout usernameLayout;
-    private TextInputLayout passwordLayout;
-    private TextInputEditText usernameEditText;
-    private TextInputEditText passwordEditText;
-    private Button loginButton;
-    private TextView registerLink;
-    private ProgressBar progressBar;
 
-    // Bottom Navigation
-    private ImageButton startTrainingButton;
-    private ImageButton communityButton;
-    private ImageButton competitionButton;
-    private ImageButton profileIcon;
-
-    private ApiService apiService;
+    private TextInputEditText emailInput; // Email 輸入框
+    private TextInputEditText passwordInput; // 密碼輸入框
+    private ProgressBar progressBar; // 進度條
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        initializeViews();
-        setupClickListeners();
-        initializeApiService();
-    }
-
-    private void initializeViews() {
-        // Main login views
-        usernameLayout = findViewById(R.id.usernameLayout);
-        passwordLayout = findViewById(R.id.passwordLayout);
-        usernameEditText = findViewById(R.id.usernameEditText);
-        passwordEditText = findViewById(R.id.passwordEditText);
-        loginButton = findViewById(R.id.loginButton);
-        registerLink = findViewById(R.id.registerLink);
+        // 初始化控件
+        emailInput = findViewById(R.id.emailInputEditText); // 確保 ID 和 XML 文件一致
+        passwordInput = findViewById(R.id.passwordEditText);
         progressBar = findViewById(R.id.progressBar);
 
-        // Bottom navigation
-        startTrainingButton = findViewById(R.id.startTrainingButton);
-        communityButton = findViewById(R.id.communityButton);
-        competitionButton = findViewById(R.id.competitionButton);
-        profileIcon = findViewById(R.id.profileIcon);
+        // 設置登錄按鈕的點擊事件
+        findViewById(R.id.loginButton).setOnClickListener(v -> handleLogin());
     }
 
-    private void setupClickListeners() {
-        loginButton.setOnClickListener(v -> performLogin());
+    private void handleLogin() {
+        String email = emailInput.getText().toString().trim();
+        String password = passwordInput.getText().toString().trim();
 
-        registerLink.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(intent);
-        });
+        // 驗證輸入
+        if (!isInputValid(email, password)) {
+            return;
+        }
 
-        // Bottom navigation listeners
-        startTrainingButton.setOnClickListener(v -> navigateToTraining());
-        communityButton.setOnClickListener(v -> navigateToCommunity());
-        competitionButton.setOnClickListener(v -> navigateToCompetition());
-        profileIcon.setOnClickListener(v -> navigateToProfile());
-    }
+        // 顯示進度條
+        progressBar.setVisibility(View.VISIBLE);
 
-    private void initializeApiService() {
-        apiService = ApiClient.getClient().create(ApiService.class);
-    }
-
-    private void performLogin() {
-        String username = usernameEditText.getText().toString().trim();
-        String password = passwordEditText.getText().toString().trim();
-
-        // Add logging
-        Log.d("LoginActivity", "Attempting login - Username: " + username);
-
-        LoginRequest loginRequest = new LoginRequest(username, password);
-        Call<LoginResponse> call = apiService.loginUser(loginRequest);
+        // 調用 API 進行登錄
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        Call<LoginResponse> call = apiService.loginUser(new LoginRequest(email, password));
 
         call.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                if (response.isSuccessful()) {
+                // 隱藏進度條
+                progressBar.setVisibility(View.GONE);
+
+                if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginResponse = response.body();
-                    // Handle successful login
-                    Toast.makeText(LoginActivity.this,
-                            "Login successful", Toast.LENGTH_SHORT).show();
+
+                    // 保存用戶登入狀態
+                    saveLoginState(loginResponse);
+
+                    Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
+
+                    // 跳轉到主頁面
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
-                    try {
-                        // Parse error response
-                        Gson gson = new Gson();
-                        LoginResponse errorResponse = gson.fromJson(
-                                response.errorBody().string(),
-                                LoginResponse.class
-                        );
-                        Toast.makeText(LoginActivity.this,
-                                errorResponse.getMessage(),
-                                Toast.LENGTH_LONG).show();
-
-                        // Add logging
-                        Log.d("LoginActivity", "Login failed: " + errorResponse.getMessage());
-                    } catch (Exception e) {
-                        Toast.makeText(LoginActivity.this,
-                                "Login failed",
-                                Toast.LENGTH_LONG).show();
-                        Log.e("LoginActivity", "Error parsing error response", e);
-                    }
+                    // 顯示登錄失敗提示
+                    Toast.makeText(LoginActivity.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                Toast.makeText(LoginActivity.this,
-                        "Network error: " + t.getMessage(),
-                        Toast.LENGTH_LONG).show();
-                Log.e("LoginActivity", "Network error", t);
+                // 隱藏進度條
+                progressBar.setVisibility(View.GONE);
+
+                // 顯示網絡錯誤提示
+                Toast.makeText(LoginActivity.this, "Failed to connect to the server", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void setLoadingState(boolean isLoading) {
-        progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-        loginButton.setEnabled(!isLoading);
-        usernameEditText.setEnabled(!isLoading);
-        passwordEditText.setEnabled(!isLoading);
+    // 驗證輸入是否有效
+    private boolean isInputValid(String email, String password) {
+        if (email.isEmpty()) {
+            emailInput.setError("Email is required");
+            return false;
+        }
+
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailInput.setError("Invalid email format");
+            return false;
+        }
+
+        if (password.isEmpty()) {
+            passwordInput.setError("Password is required");
+            return false;
+        }
+
+        if (password.length() < 6) {
+            passwordInput.setError("Password must be at least 6 characters");
+            return false;
+        }
+
+        return true;
     }
 
-    // Navigation methods
-    private void navigateToTraining() {
-        Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show();
-    }
-
-    private void navigateToCommunity() {
-        Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show();
-    }
-
-    private void navigateToCompetition() {
-        Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show();
-    }
-
-    private void navigateToProfile() {
-        Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show();
+    // 保存登錄狀態到 SharedPreferences
+    private void saveLoginState(LoginResponse loginResponse) {
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("is_logged_in", true);
+        editor.putString("auth_token", loginResponse.getToken()); // 保存認證 Token
+        editor.putString("user_email", loginResponse.getUser().getEmail()); // 保存用戶 Email（假設 UserData 包含 Email）
+        editor.apply();
     }
 }
-
-
