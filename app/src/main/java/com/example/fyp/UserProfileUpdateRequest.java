@@ -1,12 +1,19 @@
 package com.example.fyp;
 
-public class UpdateProfileRequest {
+public class UserProfileUpdateRequest {
+
     private String firstName;
     private String lastName;
     private String email;
     private String phone;
 
-    // Getter 和 Setter 方法
+    public UserProfileUpdateRequest(String firstName, String lastName, String email, String phone) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+    }
+
     public String getFirstName() {
         return firstName;
     }

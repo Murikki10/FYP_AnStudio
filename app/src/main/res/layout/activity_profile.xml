@@ -231,18 +231,6 @@
                             android:layout_height="wrap_content" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
-
-                <!-- Logout 按鈕 -->
-                <Button
-                    android:id="@+id/logoutButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:backgroundTint="@color/colorAccent"
-                    android:text="Logout"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
             </LinearLayout>
         </ScrollView>
 

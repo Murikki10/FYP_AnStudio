@@ -1,6 +1,7 @@
 package com.example.fyp;
 
 public class UserProfileResponse {
+
     private boolean success;
     private UserProfile data;
 
@@ -14,6 +15,7 @@ public class UserProfileResponse {
 }
 
 class UserProfile {
+
     private int userId;
     private String userName;
     private String bio;

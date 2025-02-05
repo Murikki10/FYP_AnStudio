@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +26,6 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView followersCountText; // 追蹤者數量
     private TextView followingCountText; // 追蹤中數量
     private TextView postsCountText;     // 帖子數量
-    private Button logoutButton;         // 退出按鈕
     private ImageButton backButton;      // 返回按鈕
     private ImageButton settingsButton;  // 設定按鈕
 
@@ -43,7 +41,6 @@ public class ProfileActivity extends AppCompatActivity {
         followersCountText = findViewById(R.id.followersCountText);
         followingCountText = findViewById(R.id.followingCountText);
         postsCountText = findViewById(R.id.postsCountText);
-        logoutButton = findViewById(R.id.logoutButton);
         backButton = findViewById(R.id.backButton);
         settingsButton = findViewById(R.id.settingsButton);
 
@@ -51,7 +48,6 @@ public class ProfileActivity extends AppCompatActivity {
         loadUserData();
 
         // 註冊點擊事件處理器
-        logoutButton.setOnClickListener(v -> logout());
         backButton.setOnClickListener(v -> onBackPressed()); // 返回到上一頁
         settingsButton.setOnClickListener(v -> openSettings()); // 打開設定頁
     }
@@ -105,27 +101,8 @@ public class ProfileActivity extends AppCompatActivity {
                 .into(profileImage);
     }
 
-    // 執行登出操作
-    private void logout() {
-        // 清除存儲的 Token
-        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
-
-        // 跳轉到登入頁面
-        Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-
-        Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
-    }
-
     // 打開設定頁面
     private void openSettings() {
-        // TODO: 替換為實際的設定頁面 Activity
-        Toast.makeText(this, "Settings clicked!", Toast.LENGTH_SHORT).show();
-
         Intent intent = new Intent(ProfileActivity.this, SettingsActivity.class);
         startActivity(intent);
     }

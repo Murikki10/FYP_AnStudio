@@ -3,6 +3,7 @@ package com.example.fyp;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -16,11 +17,10 @@ import retrofit2.Response;
 
 public class EditProfileActivity extends AppCompatActivity {
 
-    private EditText firstNameInput;
-    private EditText lastNameInput;
-    private EditText emailInput;
-    private EditText phoneInput;
+    private EditText firstNameInput, lastNameInput, emailInput, phoneInput;
     private Button saveButton;
+
+    private String originalFirstName, originalLastName, originalEmail, originalPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,65 +34,76 @@ public class EditProfileActivity extends AppCompatActivity {
         phoneInput = findViewById(R.id.phoneInput);
         saveButton = findViewById(R.id.saveButton);
 
-        // 按鈕點擊事件
-        saveButton.setOnClickListener(v -> updateProfile());
+        // 加載用戶現有資料
+        loadUserData();
+
+        // 保存按鈕點擊事件
+        saveButton.setOnClickListener(v -> saveProfileChanges());
     }
 
-    private void updateProfile() {
-        // 獲取用戶輸入的資料
-        String firstName = firstNameInput.getText().toString().trim();
-        String lastName = lastNameInput.getText().toString().trim();
-        String email = emailInput.getText().toString().trim();
-        String phone = phoneInput.getText().toString().trim();
-
-        // 驗證用戶輸入
-        if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || phone.isEmpty()) {
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // 創建請求對象
-        UpdateProfileRequest request = new UpdateProfileRequest();
-        request.setFirstName(firstName);
-        request.setLastName(lastName);
-        request.setEmail(email);
-        request.setPhone(phone);
-
-        // 獲取存儲的身份驗證 Token
+    private void loadUserData() {
         SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        String token = sharedPreferences.getString("auth_token", null);
+        originalFirstName = sharedPreferences.getString("first_name", "");
+        originalLastName = sharedPreferences.getString("last_name", "");
+        originalEmail = sharedPreferences.getString("email", "");
+        originalPhone = sharedPreferences.getString("phone", "");
 
-        if (token == null) {
-            Toast.makeText(this, "Authentication failed. Please log in again.", Toast.LENGTH_SHORT).show();
+        // 將現有資料填入輸入框
+        firstNameInput.setText(originalFirstName);
+        lastNameInput.setText(originalLastName);
+        emailInput.setText(originalEmail);
+        phoneInput.setText(originalPhone);
+    }
+
+    private void saveProfileChanges() {
+        String newFirstName = firstNameInput.getText().toString().trim();
+        String newLastName = lastNameInput.getText().toString().trim();
+        String newEmail = emailInput.getText().toString().trim();
+        String newPhone = phoneInput.getText().toString().trim();
+
+        // 判斷哪些字段被修改
+        boolean isFirstNameChanged = !TextUtils.equals(newFirstName, originalFirstName);
+        boolean isLastNameChanged = !TextUtils.equals(newLastName, originalLastName);
+        boolean isEmailChanged = !TextUtils.equals(newEmail, originalEmail);
+        boolean isPhoneChanged = !TextUtils.equals(newPhone, originalPhone);
+
+        // 如果沒有任何變更，提示用戶
+        if (!isFirstNameChanged && !isLastNameChanged && !isEmailChanged && !isPhoneChanged) {
+            Toast.makeText(this, "No changes to save", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // 使用 Retrofit 調用後端 API
+        // 構建請求對象，僅包含被修改的字段
+        UserProfileUpdateRequest updateRequest = new UserProfileUpdateRequest(
+                isFirstNameChanged ? newFirstName : null,
+                isLastNameChanged ? newLastName : null,
+                isEmailChanged ? newEmail : null,
+                isPhoneChanged ? newPhone : null
+        );
+
+        // 調用 API 提交變更
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        Call<ResponseBody> call = apiService.updateProfile("Bearer " + token, request);
-
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    // 更新成功
-                    Toast.makeText(EditProfileActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                } else {
-                    // 處理後端返回的錯誤
-                    try {
-                        String errorMessage = response.errorBody().string();
-                        Toast.makeText(EditProfileActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                    } catch (Exception e) {
-                        Toast.makeText(EditProfileActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
+        apiService.updateProfile("Bearer " + getToken(), updateRequest)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(EditProfileActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(EditProfileActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                // 處理網絡錯誤
-                Toast.makeText(EditProfileActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(EditProfileActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private String getToken() {
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("auth_token", "");
     }
 }
