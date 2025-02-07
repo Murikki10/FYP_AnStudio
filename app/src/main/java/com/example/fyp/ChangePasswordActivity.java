@@ -1,6 +1,7 @@
 package com.example.fyp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
@@ -34,6 +35,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
         // 註冊點擊事件
         changePasswordButton.setOnClickListener(v -> updatePassword());
+
+        if (!AuthManager.isLoggedIn()) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
     }
 
     private void updatePassword() {

@@ -1,8 +1,6 @@
 package com.example.fyp;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -112,13 +110,12 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
-    // 保存登錄狀態到 SharedPreferences
+    // 保存登錄狀態到 AuthManager
     private void saveLoginState(LoginResponse loginResponse) {
-        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("is_logged_in", true);
-        editor.putString("auth_token", loginResponse.getToken()); // 保存認證 Token
-        editor.putString("user_email", loginResponse.getUser().getEmail()); // 保存用戶 Email（假設 UserData 包含 Email）
-        editor.apply();
+        // 使用 AuthManager 保存令牌和用戶數據
+        AuthManager.saveAuthToken(
+                loginResponse.getToken(), // 保存返回的令牌
+                loginResponse.getUser().getEmail() // 保存用戶 Email
+        );
     }
 }

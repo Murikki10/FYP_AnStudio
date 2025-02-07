@@ -1,12 +1,17 @@
 package com.example.fyp;
 
+import java.util.List;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
 
@@ -30,4 +35,35 @@ public interface ApiService {
 
     @GET("api/user/profile")
     Call<UserProfileResponse> getUserProfile(@Header("Authorization") String token);
+
+    @GET("/api/posts")
+    Call<ApiResponse> getPosts(
+            @Query("page") int page,
+            @Query("limit") int limit
+    );
+    @GET("/api/posts/{postId}")
+    Call<Post> getPostDetails(@Path("postId") int postId);
+
+    @POST("/api/posts")
+    Call<Post> createPost(@Body Post post);
+
+    @PUT("/api/posts/{postId}")
+    Call<Post> updatePost(@Path("postId") int postId, @Body Post post);
+
+    @DELETE("/api/posts/{postId}")
+    Call<Void> deletePost(@Path("postId") int postId);
+
+    @POST("/api/posts/{postId}/toggle-like")
+    Call<Void> toggleLike(@Path("postId") int postId);
+
+    @POST("/api/posts/{postId}/toggle-follow")
+    Call<Void> toggleFollow(@Path("postId") int postId);
+
+    @GET("/api/posts/search")
+    Call<List<Post>> searchPosts(
+            @Query("q") String query,
+            @Query("page") int page,
+            @Query("limit") int limit
+    );
+
 }

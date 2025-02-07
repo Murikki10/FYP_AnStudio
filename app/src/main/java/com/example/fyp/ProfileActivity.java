@@ -44,6 +44,23 @@ public class ProfileActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         settingsButton = findViewById(R.id.settingsButton);
 
+        // 檢查是否已登入
+        if (!AuthManager.isLoggedIn()) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+        String token = AuthManager.getAuthToken();
+        if (token == null || token.isEmpty()) {
+            Toast.makeText(this, "Authentication token missing. Please log in again.", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         // 加載用戶資料
         loadUserData();
 

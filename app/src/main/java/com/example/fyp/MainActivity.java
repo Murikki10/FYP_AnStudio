@@ -1,5 +1,7 @@
 package com.example.fyp;
 
+import static com.example.fyp.NavBarHelper.setupNavBar;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
@@ -23,8 +25,8 @@ public class MainActivity extends AppCompatActivity {
         // 初始化视图
         initializeViews();
 
-        // 设置导航栏点击事件
-        setupNavBar();
+        // 設置導航欄
+        NavBarHelper.setupNavBar(this);
     }
 
     private void initializeViews() {
@@ -38,27 +40,6 @@ public class MainActivity extends AppCompatActivity {
         navProfile = findViewById(R.id.nav_profile);
     }
 
-    private void setupNavBar() {
-        // 设置导航栏按钮的点击事件
-
-        navTraining.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, TrainingActivity.class);
-            startActivity(intent);
-        });
-
-        navCommunity.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, CommunityActivity.class);
-            startActivity(intent);
-        });
-
-        navCompetition.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, CompetitionActivity.class);
-            startActivity(intent);
-        });
-
-        // 根据登录状态设置 Profile 按钮的行为和图标
-        updateProfileButton();
-    }
 
     private void updateProfileButton() {
         if (LoginManager.isLoggedIn(this)) {

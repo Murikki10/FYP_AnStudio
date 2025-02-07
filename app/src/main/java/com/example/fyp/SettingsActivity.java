@@ -1,8 +1,6 @@
 package com.example.fyp;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
@@ -30,6 +28,16 @@ public class SettingsActivity extends AppCompatActivity {
         editProfileButton = findViewById(R.id.editProfileButton);
         changePasswordButton = findViewById(R.id.changePasswordButton);
         logoutButton = findViewById(R.id.logoutButton);
+
+        // 檢查是否已登入
+        if (!AuthManager.isLoggedIn()) {
+            // 如果未登入，跳轉到登入頁
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
 
         // 設置開關的初始狀態 (這裡使用假設的默認值，未來可結合實際功能從後端或本地存儲讀取)
         trainingReminderSwitch.setChecked(true); // 默認啟用訓練提醒
@@ -70,17 +78,16 @@ public class SettingsActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(v -> logout());
     }
 
+    // 登出方法
     private void logout() {
-        // 清除本地存儲的用戶數據
-        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
+        // 清除登入狀態
+        AuthManager.logout();
 
         // 跳轉到登入頁面
-        Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        finish();
 
         // 顯示提示消息
         Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();

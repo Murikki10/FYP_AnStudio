@@ -1,6 +1,7 @@
 package com.example.fyp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -33,6 +34,13 @@ public class EditProfileActivity extends AppCompatActivity {
         emailInput = findViewById(R.id.emailInput);
         phoneInput = findViewById(R.id.phoneInput);
         saveButton = findViewById(R.id.saveButton);
+
+        if (!AuthManager.isLoggedIn()) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
 
         // 加載用戶現有資料
         loadUserData();
