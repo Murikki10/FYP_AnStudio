@@ -66,4 +66,30 @@ public interface ApiService {
             @Query("limit") int limit
     );
 
+    @POST("api/createPlan")
+    Call<CreatePlanResponse> createPlan(@Body AddPlanRequest request);
+
+    @POST("api/assignPlan")
+    Call<ResponseBody> assignPlan(@Body AssignPlanRequest request);
+
+    @POST("api/user/plans")
+    Call<List<PlanResponse>> getUserPlans(@Body UserIdRequest request);
+
+    @POST("api/plan/videos")
+    Call<List<VideoResponse>> getPlanVideos(@Body PlanIdRequest planIdRequest);
+
+    @GET("api/videos")
+    Call<List<Video>> getVideosByType(@Query("type") String type);
+
+    @GET("api/videos")
+    Call<List<Video>> getVideos();
+
+    @POST("api/videos/like")
+    Call<ResponseBody> likeVideo(@Body LikeVideoRequest likeVideoRequest);
+
+    @POST("api/videos/unlike")
+    Call<ResponseBody> unlikeVideo(@Body LikeVideoRequest likeVideoRequest);
+
+    @GET("/api/videos/liked")
+    Call<List<Video>> getLikedVideos();
 }

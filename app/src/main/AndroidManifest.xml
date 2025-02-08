@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:name=".Starter"
@@ -34,6 +40,21 @@
         <activity android:name=".PostFormActivity"/>
         <activity android:name=".PostsListActivity"/>
         <activity android:name=".SearchActivity"/>
+        <activity android:name=".WorkoutActivity" />
+        <activity android:name=".YogaVideoActivity" />
+        <activity android:name=".HIITVideoActivity" />
+        <activity android:name=".StrengthVideoActivity" />
+        <activity android:name=".TrainingDetailActivity" />
+        <activity android:name=".AllVideosActivity" />
+        <activity android:name=".LikedVideosActivity" />
+        <activity
+            android:name=".YouTubePlayerActivity"
+            android:configChanges="orientation|screenSize"
+            android:hardwareAccelerated="true" />
+        <activity android:name=".AccountActivity"/>
+        <activity android:name="CommunityActivity"/>
+        <activity android:name=".AnalysisActivity"/>
+
 
     </application>
 

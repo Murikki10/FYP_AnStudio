@@ -3,11 +3,16 @@ package com.example.fyp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,7 +23,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PostsListActivity extends AppCompatActivity {
+public class PostsListFragment extends Fragment {
 
     private RecyclerView postsRecyclerView;
     private PostsAdapter postsAdapter;
@@ -26,22 +31,29 @@ public class PostsListActivity extends AppCompatActivity {
     private EditText searchEditText;
     private Button searchButton, createPostButton;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_posts_list);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // 加載 Fragment 的佈局
+        return inflater.inflate(R.layout.fragment_posts_list, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         // 初始化 UI 元件
-        postsRecyclerView = findViewById(R.id.postsRecyclerView);
-        searchEditText = findViewById(R.id.searchEditText);
-        searchButton = findViewById(R.id.searchButton);
-        createPostButton = findViewById(R.id.createPostButton);
+        postsRecyclerView = view.findViewById(R.id.postsRecyclerView);
+        searchEditText = view.findViewById(R.id.searchEditText);
+        searchButton = view.findViewById(R.id.searchButton);
+        createPostButton = view.findViewById(R.id.createPostButton);
 
-        postsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // 設置 RecyclerView
+        postsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         postList = new ArrayList<>();
         postsAdapter = new PostsAdapter(postList, post -> {
             // 點擊帖子時跳轉到詳情頁
-            Intent intent = new Intent(this, PostDetailsActivity.class);
+            Intent intent = new Intent(requireContext(), PostDetailsActivity.class);
             intent.putExtra("postId", post.getPostId());
             startActivity(intent);
         });
@@ -56,13 +68,13 @@ public class PostsListActivity extends AppCompatActivity {
             if (!query.isEmpty()) {
                 searchPosts(query, 1, 10);
             } else {
-                Toast.makeText(this, "Please enter a search query", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Please enter a search query", Toast.LENGTH_SHORT).show();
             }
         });
 
         // 創建帖子功能
         createPostButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, PostFormActivity.class);
+            Intent intent = new Intent(requireContext(), PostFormActivity.class);
             startActivity(intent);
         });
     }
@@ -81,14 +93,14 @@ public class PostsListActivity extends AppCompatActivity {
                     }
                     postsAdapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(PostsListActivity.this, "Failed to load posts", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Failed to load posts", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
-                Log.e("PostsListActivity", "Error: " + t.getMessage());
-                Toast.makeText(PostsListActivity.this, "Error loading posts", Toast.LENGTH_SHORT).show();
+                Log.e("PostsListFragment", "Error: " + t.getMessage());
+                Toast.makeText(requireContext(), "Error loading posts", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -104,13 +116,13 @@ public class PostsListActivity extends AppCompatActivity {
                     postList.addAll(response.body());
                     postsAdapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(PostsListActivity.this, "Failed to load search results", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Failed to load search results", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t) {
-                Toast.makeText(PostsListActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

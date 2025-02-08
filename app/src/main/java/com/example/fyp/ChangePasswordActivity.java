@@ -85,6 +85,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(ChangePasswordActivity.this, "Password updated successfully", Toast.LENGTH_SHORT).show();
+                    finish();
                 } else {
                     // 處理後端返回的錯誤
                     try {
