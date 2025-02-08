@@ -2,8 +2,8 @@ package com.example.fyp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,6 +61,8 @@ public class ProfileActivity extends AppCompatActivity {
             return;
         }
 
+        Log.d("ProfileActivity", "Loaded token: " + token);
+
         // 加載用戶資料
         loadUserData();
 
@@ -71,10 +73,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     // 從後端加載用戶資料
     private void loadUserData() {
-        // 獲取存儲的 Token
-        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        String token = sharedPreferences.getString("auth_token", null);
-
+        String token = AuthManager.getAuthToken();
         if (token == null) {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
             return;

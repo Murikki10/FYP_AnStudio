@@ -67,10 +67,16 @@ public interface ApiService {
     );
 
     @POST("api/createPlan")
-    Call<CreatePlanResponse> createPlan(@Body AddPlanRequest request);
+    Call<CreatePlanResponse> createPlan(
+            @Header("Authorization") String token,
+            @Body AddPlanRequest request
+    );
 
     @POST("api/assignPlan")
-    Call<ResponseBody> assignPlan(@Body AssignPlanRequest request);
+    Call<ResponseBody> assignPlan(
+            @Header("Authorization") String token,
+            @Body AssignPlanRequest request
+    );
 
     @POST("api/user/plans")
     Call<List<PlanResponse>> getUserPlans(@Body UserIdRequest request);
@@ -92,4 +98,10 @@ public interface ApiService {
 
     @GET("/api/videos/liked")
     Call<List<Video>> getLikedVideos();
+
+    @POST("api/user/plans")
+    Call<List<PlanResponse>> getUserPlansWithToken(@Header("Authorization") String token);
+
+    @POST("api/plan/videos")
+    Call<List<VideoResponse>> getPlanVideosWithToken(@Header("Authorization") String token, @Body PlanIdRequest planIdRequest);
 }

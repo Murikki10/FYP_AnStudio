@@ -1,8 +1,7 @@
 package com.example.fyp;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.content.SharedPreferences;
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,21 +78,22 @@ public class AddPlanActivity extends Fragment {
     }
 
     private void addPlanToServer(String type, String level) {
-        SharedPreferences sharedPreferences =
-                requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        String userId = sharedPreferences.getString("userId", null);
-
-        if (userId == null) {
-            Toast.makeText(getContext(), "UserID not found. Please login again.", Toast.LENGTH_SHORT).show();
+        String token = AuthManager.getAuthToken();
+        if (token == null) {
+            Toast.makeText(getContext(), "Authentication failed. Please log in again.", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        // 確保傳遞的值是小寫
+        type = type.toLowerCase();
+        level = level.toLowerCase();
 
         // 打印參數，確認是否正確
         Log.d("AddPlanActivity", "Type: " + type + ", Level: " + level);
 
         AddPlanRequest request = new AddPlanRequest("My Plan", type, level);
 
-        Call<CreatePlanResponse> createPlanCall = apiService.createPlan(request);
+        Call<CreatePlanResponse> createPlanCall = apiService.createPlan("Bearer " + token, request);
         createPlanCall.enqueue(new Callback<CreatePlanResponse>() {
             @Override
             public void onResponse(Call<CreatePlanResponse> call, Response<CreatePlanResponse> response) {
@@ -121,18 +121,15 @@ public class AddPlanActivity extends Fragment {
     }
 
     private void assignPlanToUser(int planId) {
-        SharedPreferences sharedPreferences =
-                requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        String userId = sharedPreferences.getString("userId", null);
-
-        if (userId == null) {
-            Toast.makeText(getContext(), "UserID not found. Please login again.", Toast.LENGTH_SHORT).show();
+        String token = AuthManager.getAuthToken();
+        if (token == null) {
+            Toast.makeText(getContext(), "Authentication failed. Please log in again.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        AssignPlanRequest request = new AssignPlanRequest(planId, userId);
+        AssignPlanRequest request = new AssignPlanRequest(planId);
 
-        Call<ResponseBody> assignPlanCall = apiService.assignPlan(request);
+        Call<ResponseBody> assignPlanCall = apiService.assignPlan("Bearer " + token, request);
         assignPlanCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -157,6 +154,7 @@ public class AddPlanActivity extends Fragment {
             }
         });
     }
+
     private void handleNextStep() {
         currentStep++;
 
@@ -183,6 +181,10 @@ public class AddPlanActivity extends Fragment {
             });
 
         } else if (currentStep == 2) {
+            if (selectedOption == null || selectedLevel == null) {
+                Toast.makeText(getContext(), "Please complete all steps before proceeding.", Toast.LENGTH_SHORT).show();
+                return;
+            }
             addPlanToServer(selectedOption, selectedLevel);
         }
     }

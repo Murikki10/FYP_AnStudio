@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText emailInput; // Email 輸入框
     private TextInputEditText passwordInput; // 密碼輸入框
     private ProgressBar progressBar; // 進度條
+    private TextView registerLink; // 註冊連結
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +31,16 @@ public class LoginActivity extends AppCompatActivity {
         emailInput = findViewById(R.id.emailInputEditText); // 確保 ID 和 XML 文件一致
         passwordInput = findViewById(R.id.passwordEditText);
         progressBar = findViewById(R.id.progressBar);
+        registerLink = findViewById(R.id.registerLink);
 
         // 設置登錄按鈕的點擊事件
         findViewById(R.id.loginButton).setOnClickListener(v -> handleLogin());
+
+        // 註冊連結點擊事件，跳轉到註冊頁面
+        registerLink.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void handleLogin() {

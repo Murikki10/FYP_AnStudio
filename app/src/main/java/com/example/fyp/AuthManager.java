@@ -2,9 +2,11 @@ package com.example.fyp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class AuthManager {
     private static final String PREFS_NAME = "auth_prefs";
+    private static final String USER_PREFS_NAME = "user_prefs"; // 新增檢查的 SharedPreferences 名稱
     private static final String KEY_TOKEN = "auth_token";
     private static final String KEY_USER_EMAIL = "user_email";
     private static final String KEY_IS_LOGGED_IN = "is_logged_in";
@@ -23,6 +25,7 @@ public class AuthManager {
         editor.putString(KEY_USER_EMAIL, email); // 保存 Email
         editor.putBoolean(KEY_IS_LOGGED_IN, true); // 設定登入狀態
         editor.apply();
+        Log.d("AuthManager", "Token saved: " + token + ", Email: " + email);
     }
 
     // 獲取令牌
@@ -45,9 +48,18 @@ public class AuthManager {
 
     // 清除登入狀態
     public static void logout() {
+        // 清空 auth_prefs
         SharedPreferences sharedPreferences = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear(); // 清空所有數據
+        editor.clear();
         editor.apply();
+
+        // 清空 user_prefs（如果有其他存儲 Token 的地方）
+        SharedPreferences userPrefs = appContext.getSharedPreferences(USER_PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor userEditor = userPrefs.edit();
+        userEditor.clear();
+        userEditor.apply();
+
+        Log.d("AuthManager", "Logout called. All preferences cleared.");
     }
 }

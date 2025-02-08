@@ -23,6 +23,6 @@
 
     <item
         android:id="@+id/nav_community"
-        android:icon="@drawable/community"
-        android:title="Community" />
+        android:icon="@drawable/home"
+        android:title="Home" />
 </menu>

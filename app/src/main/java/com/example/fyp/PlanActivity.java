@@ -1,7 +1,5 @@
 package com.example.fyp;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,7 +61,7 @@ public class PlanActivity extends Fragment {
         return view;
     }
 
-    // Load the user's plans from the backend
+    // Load the user's plans from the backend using Token
     private void loadExistingPlans() {
         // Clear the container to avoid duplicate loading
         planListContainer.removeAllViews();
@@ -78,18 +76,15 @@ public class PlanActivity extends Fragment {
         heading.setPadding(16, 16, 16, 16);
         planListContainer.addView(heading);
 
-        // Retrieve the userId from SharedPreferences
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        String userId = sharedPreferences.getString("userId", null);
-
-        // If the userId is null, prompt the user to log in again
-        if (userId == null) {
-            Toast.makeText(getContext(), "User ID not found. Please log in again.", Toast.LENGTH_SHORT).show();
+        // Retrieve the token from AuthManager
+        String token = AuthManager.getAuthToken();
+        if (token == null) {
+            Toast.makeText(getContext(), "Authentication failed. Please log in again.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Call the backend API to get the user's plans
-        Call<List<PlanResponse>> call = apiService.getUserPlans(new UserIdRequest(userId)); // Pass the request body
+        Call<List<PlanResponse>> call = apiService.getUserPlansWithToken("Bearer " + token); // Use Authorization header
         call.enqueue(new Callback<List<PlanResponse>>() {
             @Override
             public void onResponse(Call<List<PlanResponse>> call, Response<List<PlanResponse>> response) {
@@ -113,7 +108,7 @@ public class PlanActivity extends Fragment {
                         index++;
                     }
                 } else {
-                    Toast.makeText(getContext(), "Failed to load plans. Please try again.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "No plans found. Please create a new plan.", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -133,13 +128,16 @@ public class PlanActivity extends Fragment {
         ));
         row.setOrientation(LinearLayout.HORIZONTAL);
 
-        // Set the row click event
+        // 添加點擊事件
         row.setOnClickListener(v -> {
-            // Load all video details for the selected plan
+            // 添加調試日誌，確認 planId
+            System.out.println("Clicked Plan ID: " + planId);
+
+            // 傳遞 planId 加載視頻
             loadPlanVideos(planId, planName);
         });
 
-        // Add the serial number
+        // 添加序號
         TextView columnNumber = new TextView(getContext());
         columnNumber.setText(String.valueOf(index));
         columnNumber.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
@@ -147,7 +145,7 @@ public class PlanActivity extends Fragment {
         columnNumber.setPadding(8, 8, 8, 8);
         row.addView(columnNumber);
 
-        // Add the plan name
+        // 添加計劃名稱
         TextView columnPlanName = new TextView(getContext());
         columnPlanName.setText(planName);
         columnPlanName.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 3f));
@@ -155,12 +153,13 @@ public class PlanActivity extends Fragment {
         columnPlanName.setPadding(8, 8, 8, 8);
         row.addView(columnPlanName);
 
-        // Add the row to the container
+        // 添加行到容器
         planListContainer.addView(row);
     }
 
-    // Load all video details for the specified plan
+    // Load all video details for the specified plan using Token
     private void loadPlanVideos(int planId, String planName) {
+        System.out.println("Loading videos for Plan ID: " + planId);
         // Clear the container to display new content
         planListContainer.removeAllViews();
 
@@ -174,8 +173,15 @@ public class PlanActivity extends Fragment {
         planTitle.setPadding(16, 16, 16, 16);
         planListContainer.addView(planTitle);
 
+        // Retrieve the token from AuthManager
+        String token = AuthManager.getAuthToken();
+        if (token == null) {
+            Toast.makeText(getContext(), "Authentication failed. Please log in again.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         // Call the backend API to get video details
-        Call<List<VideoResponse>> call = apiService.getPlanVideos(new PlanIdRequest(planId));
+        Call<List<VideoResponse>> call = apiService.getPlanVideosWithToken("Bearer " + token, new PlanIdRequest(planId));
         call.enqueue(new Callback<List<VideoResponse>>() {
             @Override
             public void onResponse(Call<List<VideoResponse>> call, Response<List<VideoResponse>> response) {

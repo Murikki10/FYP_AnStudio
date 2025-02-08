@@ -1,27 +1,18 @@
 package com.example.fyp;
 public class AssignPlanRequest {
     private int planId;
-    private String userId;
 
-    public AssignPlanRequest(int planId, String userId) {
+    // 修改構造方法
+    public AssignPlanRequest(int planId) {
         this.planId = planId;
-        this.userId = userId;
     }
 
-    // Getters and Setters
+    // 刪除 userId 的 Getter 和 Setter
     public int getPlanId() {
         return planId;
     }
 
     public void setPlanId(int planId) {
         this.planId = planId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 }

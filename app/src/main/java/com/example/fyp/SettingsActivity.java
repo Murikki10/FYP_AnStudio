@@ -38,28 +38,21 @@ public class SettingsActivity extends AppCompatActivity {
             return;
         }
 
-
         // 設置開關的初始狀態 (這裡使用假設的默認值，未來可結合實際功能從後端或本地存儲讀取)
         trainingReminderSwitch.setChecked(true); // 默認啟用訓練提醒
         communityNotificationsSwitch.setChecked(false); // 默認禁用社群通知
 
         // 添加開關的切換事件處理器
         trainingReminderSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // 顯示當前開關狀態的提示 (未來可以在這裡實現實際功能)
             Toast.makeText(SettingsActivity.this,
                     "Training Reminder: " + (isChecked ? "Enabled" : "Disabled"),
                     Toast.LENGTH_SHORT).show();
-
-            // TODO: 在這裡處理訓練提醒開關的功能
         });
 
         communityNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // 顯示當前開關狀態的提示 (未來可以在這裡實現實際功能)
             Toast.makeText(SettingsActivity.this,
                     "Community Notifications: " + (isChecked ? "Enabled" : "Disabled"),
                     Toast.LENGTH_SHORT).show();
-
-            // TODO: 在這裡處理社群通知開關的功能
         });
 
         // 設置 "編輯個人資料" 按鈕的點擊事件

@@ -52,10 +52,12 @@ public class WorkoutActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.nav_plan) {
                     selectedFragment = new PlanActivity();
                     toolbar.setTitle("Plan");
-                }else if (item.getItemId() == R.id.nav_community) {
-                    selectedFragment = new PostsListFragment();
-                    toolbar.setTitle("Community");
-                }else if (item.getItemId() == R.id.nav_tracking) {
+                } else if (item.getItemId() == R.id.nav_community) {
+                    // 修改為跳轉到 MainActivity
+                    Intent intent = new Intent(WorkoutActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    return false; // 停止後續 Fragment 替換
+                } else if (item.getItemId() == R.id.nav_tracking) {
                     selectedFragment = new TrackingActivity();
                     toolbar.setTitle("Tracking");
                 }
