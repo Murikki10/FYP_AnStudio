@@ -84,10 +84,6 @@ public class AddPlanActivity extends Fragment {
             return;
         }
 
-        // 確保傳遞的值是小寫
-        type = type.toLowerCase();
-        level = level.toLowerCase();
-
         // 打印參數，確認是否正確
         Log.d("AddPlanActivity", "Type: " + type + ", Level: " + level);
 
@@ -181,10 +177,6 @@ public class AddPlanActivity extends Fragment {
             });
 
         } else if (currentStep == 2) {
-            if (selectedOption == null || selectedLevel == null) {
-                Toast.makeText(getContext(), "Please complete all steps before proceeding.", Toast.LENGTH_SHORT).show();
-                return;
-            }
             addPlanToServer(selectedOption, selectedLevel);
         }
     }

@@ -11,4 +11,15 @@
     <string name="post_saved_successfully">Post saved successfully</string>
     <string name="failed_to_save_post">Failed to save post</string>
     <string name="empty_fields_error">Title and content cannot be empty</string>
+    <string-array name="plan_types">
+        <item>Yoga</item>
+        <item>HIIT</item>
+        <item>Strength</item>
+    </string-array>
+
+    <string-array name="plan_levels">
+        <item>Beginner</item>
+        <item>Intermediate</item>
+        <item>Advanced</item>
+    </string-array>
 </resources>

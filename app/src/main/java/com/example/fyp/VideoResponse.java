@@ -1,16 +1,15 @@
 package com.example.fyp;
 
-public class VideoResponse {
+import java.io.Serializable;
+
+public class VideoResponse implements Serializable {
     private int id;
     private String title;
-    private String type;
-    private String duration;
     private String description;
-    private String url;
-    private String thumbnail;
+    private String duration;
     private String level;
 
-    // Getter 和 Setter 方法
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -27,22 +26,6 @@ public class VideoResponse {
         this.title = title;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getDuration() {
-        return duration;
-    }
-
-    public void setDuration(String duration) {
-        this.duration = duration;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -51,20 +34,12 @@ public class VideoResponse {
         this.description = description;
     }
 
-    public String getUrl() {
-        return url;
+    public String getDuration() {
+        return duration;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getThumbnail() {
-        return thumbnail;
-    }
-
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     public String getLevel() {

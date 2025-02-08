@@ -98,10 +98,15 @@ public interface ApiService {
 
     @GET("/api/videos/liked")
     Call<List<Video>> getLikedVideos();
+    
+    // 獲取用戶計劃列表
+    @POST("/api/user/plans")
+    Call<List<PlanResponse>> getUserPlansWithToken(@Header("Authorization") String authToken);
 
-    @POST("api/user/plans")
-    Call<List<PlanResponse>> getUserPlansWithToken(@Header("Authorization") String token);
-
-    @POST("api/plan/videos")
-    Call<List<VideoResponse>> getPlanVideosWithToken(@Header("Authorization") String token, @Body PlanIdRequest planIdRequest);
+    // 獲取計劃視頻列表
+    @POST("/api/plan/videos")
+    Call<List<VideoResponse>> getPlanVideosWithToken(
+            @Header("Authorization") String authToken,
+            @Body PlanIdRequest planIdRequest
+    );
 }
