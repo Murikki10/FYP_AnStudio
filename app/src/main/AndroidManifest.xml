@@ -52,7 +52,8 @@
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true" />
         <activity android:name=".AccountActivity"/>
-        <activity android:name="CommunityActivity"/>
+        <activity android:name=".PrivacyPolicyActivity"/>
+        <activity android:name=".TermsOfServiceActivity"/>
         <activity android:name=".AnalysisActivity"/>
 
 

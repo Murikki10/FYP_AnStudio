@@ -1,8 +1,6 @@
 package com.example.fyp;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,15 +31,16 @@ public class ChangePasswordActivity extends AppCompatActivity {
         confirmPasswordInput = findViewById(R.id.confirmPasswordInput);
         changePasswordButton = findViewById(R.id.changePasswordButton);
 
-        // 註冊點擊事件
-        changePasswordButton.setOnClickListener(v -> updatePassword());
-
+        // 檢查用戶是否已登錄
         if (!AuthManager.isLoggedIn()) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
             return;
         }
+
+        // 註冊點擊事件
+        changePasswordButton.setOnClickListener(v -> updatePassword());
     }
 
     private void updatePassword() {
@@ -67,12 +66,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
         request.setNewPassword(newPassword);
         request.setConfirmPassword(confirmPassword);
 
-        // 獲取存儲的 Token，用於身份驗證
-        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        String token = sharedPreferences.getString("auth_token", null);
-
+        // 獲取 Token
+        String token = AuthManager.getAuthToken();
         if (token == null) {
             Toast.makeText(this, "Authentication failed. Please log in again.", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
             return;
         }
 
