@@ -1,6 +1,5 @@
 package com.example.fyp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,10 +51,17 @@ public class PostsListFragment extends Fragment {
         postsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         postList = new ArrayList<>();
         postsAdapter = new PostsAdapter(postList, post -> {
-            // 點擊帖子時跳轉到詳情頁
-            Intent intent = new Intent(requireContext(), PostDetailsActivity.class);
-            intent.putExtra("postId", post.getPostId());
-            startActivity(intent);
+            // 點擊帖子時跳轉到 PostDetailsFragment
+            PostDetailsFragment postDetailsFragment = new PostDetailsFragment();
+            Bundle args = new Bundle();
+            args.putInt("postId", post.getPostId()); // 傳遞帖子 ID
+            postDetailsFragment.setArguments(args);
+
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, postDetailsFragment) // 替換容器中的 Fragment
+                    .addToBackStack(null) // 添加到返回棧
+                    .commit();
         });
         postsRecyclerView.setAdapter(postsAdapter);
 
@@ -72,11 +78,16 @@ public class PostsListFragment extends Fragment {
             }
         });
 
-        // 創建帖子功能
+       /* // 創建帖子功能
         createPostButton.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), PostFormActivity.class);
-            startActivity(intent);
-        });
+            PostFormFragment postFormFragment = new PostFormFragment();
+
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, postFormFragment) // 跳轉到創建帖子頁面
+                    .addToBackStack(null) // 添加到返回棧
+                    .commit();
+        }); */
     }
 
     private void fetchPostsFromApi(int page, int limit) {

@@ -49,8 +49,4 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- 統一的底部導航欄 -->
-    <include
-        android:id="@+id/navBar"
-        layout="@layout/nav_bar" />
 </LinearLayout>

@@ -1,5 +1,7 @@
 package com.example.fyp;
 
+import static com.example.fyp.NavBarHelper.setupNavBar;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -38,8 +40,6 @@ public class PostFormActivity extends AppCompatActivity {
         // 設置發佈按鈕點擊事件
         postButton.setOnClickListener(v -> handlePostButtonClick());
 
-        // 設置導航欄按鈕點擊事件
-        setupNavBar();
     }
 
     /**
@@ -53,8 +53,6 @@ public class PostFormActivity extends AppCompatActivity {
         contentInput = findViewById(R.id.content_input);
         postButton = findViewById(R.id.post_button);
 
-        // 初始化導航欄按鈕
-        NavBarHelper.setupNavBar(this);
     }
 
     /**
@@ -93,31 +91,5 @@ public class PostFormActivity extends AppCompatActivity {
         // 清空輸入框
         titleInput.setText("");
         contentInput.setText("");
-    }
-
-    /**
-     * 設置導航欄按鈕的點擊事件
-     */
-    private void setupNavBar() {
-        // Home 按鈕
-        navHome.setOnClickListener(v -> {
-            Log.i(TAG, "Home button clicked");
-            Intent intent = new Intent(PostFormActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
-
-        // Search 按鈕
-        navSearch.setOnClickListener(v -> {
-            Log.i(TAG, "Search button clicked");
-            Intent intent = new Intent(PostFormActivity.this, SearchActivity.class);
-            startActivity(intent);
-        });
-
-        // Profile 按鈕
-        navProfile.setOnClickListener(v -> {
-            Log.i(TAG, "Profile button clicked");
-            Intent intent = new Intent(PostFormActivity.this, ProfileActivity.class);
-            startActivity(intent);
-        });
     }
 }

@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
         // Profile Icon 的點擊邏輯
         ImageView accountIcon = findViewById(R.id.account_icon); // 確保 XML 中有這個 ID
         accountIcon.setOnClickListener(v -> {
-            if (LoginManager.isLoggedIn(MainActivity.this)) {
-                // 如果已登錄，跳轉到 ProfileActivity
+            if (AuthManager.isLoggedIn()) {
+                // 如果已登錄（檢查 AuthManager 中的令牌）
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 startActivity(intent);
             } else {
