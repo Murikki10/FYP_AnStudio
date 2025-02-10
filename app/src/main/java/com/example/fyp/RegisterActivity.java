@@ -29,6 +29,8 @@ public class RegisterActivity extends AppCompatActivity {
     private Button registerButton;
     private ApiService apiService;
 
+    public EditText confirmPasswordEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
         phoneEditText = findViewById(R.id.phoneEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         registerButton = findViewById(R.id.registerButton);
+        confirmPasswordEditText = findViewById(R.id.confirmPasswordEditText);
     }
 
     private void showSuccessMessage() {
@@ -140,6 +143,13 @@ public class RegisterActivity extends AppCompatActivity {
             return false;
         }
 
+        String cPassword = confirmPasswordEditText.getText().toString().trim();
+        if(!password.equals(cPassword)){
+            confirmPasswordEditText.setError("Password must be same");
+            return false;
+        }
+
+
         return true;
     }
 
@@ -179,7 +189,7 @@ public class RegisterActivity extends AppCompatActivity {
                         public void run() {
                             finish();
                         }
-                    }, 2000); // 2秒後關閉
+                    }, 1000); // 2秒後關閉
                 } else {
                     try {
                         String errorBody = response.errorBody().string();
