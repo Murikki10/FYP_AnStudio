@@ -84,21 +84,24 @@ public class AddPlanActivity extends Fragment {
             return;
         }
 
-        // 打印參數，確認是否正確
-        Log.d("AddPlanActivity", "Type: " + type + ", Level: " + level);
+        // Generate dynamic plan name
+        String planName = level + " " + type + " Plan";
 
-        AddPlanRequest request = new AddPlanRequest("My Plan", type, level);
+        // Log the dynamic plan name and parameters for debugging
+        Log.d("AddPlanActivity", "Plan Name: " + planName + ", Type: " + type + ", Level: " + level);
+
+        AddPlanRequest request = new AddPlanRequest(planName, type, level);
 
         Call<CreatePlanResponse> createPlanCall = apiService.createPlan("Bearer " + token, request);
         createPlanCall.enqueue(new Callback<CreatePlanResponse>() {
             @Override
             public void onResponse(Call<CreatePlanResponse> call, Response<CreatePlanResponse> response) {
                 if (response.isSuccessful()) {
-                    int planId = response.body().getPlanId();
-                    assignPlanToUser(planId);
+                    Toast.makeText(getContext(), "Plan created successfully!", Toast.LENGTH_SHORT).show();
+                    requireActivity().getSupportFragmentManager().popBackStack(); // Return to previous fragment
                 } else {
                     try {
-                        // 打印後端的錯誤響應
+                        // Log the error response from the server
                         String errorMessage = response.errorBody().string();
                         Toast.makeText(getContext(), "Failed to create plan: " + errorMessage, Toast.LENGTH_SHORT).show();
                         Log.e("AddPlanActivity", "Error: " + errorMessage);
@@ -111,41 +114,6 @@ public class AddPlanActivity extends Fragment {
 
             @Override
             public void onFailure(Call<CreatePlanResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void assignPlanToUser(int planId) {
-        String token = AuthManager.getAuthToken();
-        if (token == null) {
-            Toast.makeText(getContext(), "Authentication failed. Please log in again.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        AssignPlanRequest request = new AssignPlanRequest(planId);
-
-        Call<ResponseBody> assignPlanCall = apiService.assignPlan("Bearer " + token, request);
-        assignPlanCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Plan assigned successfully!", Toast.LENGTH_SHORT).show();
-                    requireActivity().getSupportFragmentManager().popBackStack();
-                } else {
-                    try {
-                        String errorMessage = response.errorBody().string();
-                        Toast.makeText(getContext(), "Failed to assign plan: " + errorMessage, Toast.LENGTH_SHORT).show();
-                        Log.e("AddPlanActivity", "Error: " + errorMessage);
-                    } catch (Exception e) {
-                        Toast.makeText(getContext(), "Failed to assign plan.", Toast.LENGTH_SHORT).show();
-                        Log.e("AddPlanActivity", "Error parsing error body", e);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
