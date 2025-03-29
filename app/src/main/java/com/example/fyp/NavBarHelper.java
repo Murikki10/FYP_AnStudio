@@ -17,7 +17,7 @@ public class NavBarHelper {
         });
 
         navCommunity.setOnClickListener(v -> {
-            Intent intent = new Intent(activity, PostsListActivity.class);
+            Intent intent = new Intent(activity, BoardListActivity.class);
             activity.startActivity(intent);
         });
 

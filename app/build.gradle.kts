@@ -37,6 +37,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.recyclerview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -68,4 +69,6 @@ dependencies {
 
     // Guava
     implementation ("com.google.guava:guava:31.1-android")
+
+    implementation ("androidx.recyclerview:recyclerview:1.3.0")
 }

@@ -109,4 +109,12 @@ public interface ApiService {
             @Header("Authorization") String authToken,
             @Body PlanIdRequest planIdRequest
     );
+
+    @GET("/api/boards")
+    Call<List<Board>> getBoards();
+
+    @POST("/api/boards/{id}/follow")
+    Call<Void> updateFollowStatus(@Path("id") int boardId, @Body FollowRequest followRequest);
+
+
 }

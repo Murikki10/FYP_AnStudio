@@ -51,8 +51,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 return false; // 不加載 Fragment
             } else if (item.getItemId() == R.id.nav_community) {
-                selectedFragment = new PostsListFragment();
-                toolbar.setTitle("Community");
+               // selectedFragment = new PostsListFragment();
+               // toolbar.setTitle("Community");
+                Intent intent = new Intent(MainActivity.this, BoardListActivity.class);
+                startActivity(intent);
+                return false;
             } else if (item.getItemId() == R.id.nav_competition) {
                 selectedFragment = new CompetitionFragment();
                 toolbar.setTitle("Competition");
