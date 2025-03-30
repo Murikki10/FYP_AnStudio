@@ -63,4 +63,9 @@ public class Board {
     public void setIsFollowed(int isFollowed) {
         this.isFollowed = isFollowed;
     }
+
+    @Override
+    public String toString() {
+        return boardName; // 返回分區名稱
+    }
 }

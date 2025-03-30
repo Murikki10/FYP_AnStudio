@@ -1,57 +1,115 @@
 package com.example.fyp;
 
+import java.util.List;
+
 public class Post {
     private int postId;
     private String title;
     private String content;
+    private int boardId;
+    private String visibility;
+    private String type;
     private int likeCount;
     private int commentCount;
     private int viewCount;
     private String createdAt;
-
-    // 新增字段
-    private int boardId; // 分區 ID
-    private String type; // 帖子類型
-    private String visibility; // 可見性
+    private String imageUrl; // 圖片 URL
+    private List<String> tags; // 標籤列表
 
     // Getters 和 Setters
-    public int getPostId() { return postId; }
+    public int getPostId() {
+        return postId;
+    }
 
-    public void setPostId(int postId) { this.postId = postId; }
+    public void setPostId(int postId) {
+        this.postId = postId;
+    }
 
-    public String getTitle() { return title; }
+    public String getTitle() {
+        return title;
+    }
 
-    public void setTitle(String title) { this.title = title; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public String getContent() { return content; }
+    public String getContent() {
+        return content;
+    }
 
-    public void setContent(String content) { this.content = content; }
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-    public int getLikeCount() { return likeCount; }
+    public int getBoardId() {
+        return boardId;
+    }
 
-    public void setLikeCount(int likeCount) { this.likeCount = likeCount; }
+    public void setBoardId(int boardId) {
+        this.boardId = boardId;
+    }
 
-    public int getCommentCount() { return commentCount; }
+    public String getVisibility() {
+        return visibility;
+    }
 
-    public void setCommentCount(int commentCount) { this.commentCount = commentCount; }
+    public void setVisibility(String visibility) {
+        this.visibility = visibility;
+    }
 
-    public int getViewCount() { return viewCount; }
+    public String getType() {
+        return type;
+    }
 
-    public void setViewCount(int viewCount) { this.viewCount = viewCount; }
+    public void setType(String type) {
+        this.type = type;
+    }
 
-    public String getCreatedAt() { return createdAt; }
+    public int getLikeCount() {
+        return likeCount;
+    }
 
-    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
 
-    public int getBoardId() { return boardId; }
+    public int getCommentCount() {
+        return commentCount;
+    }
 
-    public void setBoardId(int boardId) { this.boardId = boardId; }
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
 
-    public String getType() { return type; }
+    public int getViewCount() {
+        return viewCount;
+    }
 
-    public void setType(String type) { this.type = type; }
+    public void setViewCount(int viewCount) {
+        this.viewCount = viewCount;
+    }
 
-    public String getVisibility() { return visibility; }
+    public String getCreatedAt() {
+        return createdAt;
+    }
 
-    public void setVisibility(String visibility) { this.visibility = visibility; }
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
 }

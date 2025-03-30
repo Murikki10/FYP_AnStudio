@@ -36,6 +36,29 @@ public interface ApiService {
     @GET("api/user/profile")
     Call<UserProfileResponse> getUserProfile(@Header("Authorization") String token);
 
+
+    // 獲取帖子列表
+    //@POST("/api/posts")
+    //Call<ApiResponse> getPosts(
+    //        @Header("Authorization") String token,
+   //         @Body PaginationRequest paginationRequest
+   // );
+
+    // 獲取單個帖子詳情
+    @POST("/api/posts/{postId}")
+    Call<Post> getPostDetails(@Header("Authorization") String token, @Body int postId);
+
+    // 獲取分區列表
+    @GET("/api/boards")
+    Call<List<Board>> getBoards();
+
+    // 創建帖子
+    @POST("/api/posts")
+    Call<PostsResponse> createPost(@Body PostRequest postRequest);
+
+    @GET("/api/tags")
+    Call<List<Tag>> getTags();
+
     @GET("/api/posts")
     Call<ApiResponse> getPosts(
             @Query("page") int page,
@@ -43,9 +66,6 @@ public interface ApiService {
     );
     @GET("/api/posts/{postId}")
     Call<Post> getPostDetails(@Path("postId") int postId);
-
-    @POST("/api/posts")
-    Call<Post> createPost(@Body Post post);
 
     @PUT("/api/posts/{postId}")
     Call<Post> updatePost(@Path("postId") int postId, @Body Post post);
@@ -109,9 +129,6 @@ public interface ApiService {
             @Header("Authorization") String authToken,
             @Body PlanIdRequest planIdRequest
     );
-
-    @GET("/api/boards")
-    Call<List<Board>> getBoards();
 
     @POST("/api/boards/{id}/follow")
     Call<Void> updateFollowStatus(@Path("id") int boardId, @Body FollowRequest followRequest);
