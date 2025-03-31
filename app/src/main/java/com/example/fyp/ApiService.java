@@ -37,12 +37,12 @@ public interface ApiService {
     Call<UserProfileResponse> getUserProfile(@Header("Authorization") String token);
 
 
-    // 獲取帖子列表
-    //@POST("/api/posts")
-    //Call<ApiResponse> getPosts(
-    //        @Header("Authorization") String token,
-   //         @Body PaginationRequest paginationRequest
-   // );
+    @GET("/api/posts")
+    Call<ApiResponse> getPosts(
+            @Query("boardId") int boardId,
+            @Query("page") int page,
+            @Query("limit") int limit
+    );
 
     // 獲取單個帖子詳情
     @POST("/api/posts/{postId}")
@@ -59,11 +59,6 @@ public interface ApiService {
     @GET("/api/tags")
     Call<List<Tag>> getTags();
 
-    @GET("/api/posts")
-    Call<ApiResponse> getPosts(
-            @Query("page") int page,
-            @Query("limit") int limit
-    );
     @GET("/api/posts/{postId}")
     Call<Post> getPostDetails(@Path("postId") int postId);
 
