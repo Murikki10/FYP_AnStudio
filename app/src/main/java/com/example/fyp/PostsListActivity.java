@@ -1,7 +1,9 @@
 package com.example.fyp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,11 +33,30 @@ public class PostsListActivity extends AppCompatActivity {
         postsRecyclerView = findViewById(R.id.postsRecyclerView);
         postsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         postList = new ArrayList<>();
+
+        // 初始化適配器
         postsAdapter = new PostsAdapter(postList, post -> {
-            // 點擊帖子時跳轉到詳情頁
             Log.d(TAG, "Post clicked: " + post.getPostId());
+            String authToken = AuthManager.getAuthToken(); // 獲取 Token
+            if (authToken == null) {
+                Toast.makeText(this, "User not authenticated. Please log in.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Log.d(TAG, "Passing authToken to PostDetailsActivity: " + authToken);
+            Intent intent = new Intent(PostsListActivity.this, PostDetailsActivity.class);
+            intent.putExtra("postId", post.getPostId());
+            intent.putExtra("auth", "Bearer " + authToken);
+            startActivity(intent);
         });
         postsRecyclerView.setAdapter(postsAdapter);
+
+        // 設置 "Create Post" 按鈕點擊事件
+        Button createPostButton = findViewById(R.id.createPostButton);
+        createPostButton.setOnClickListener(v -> {
+            Log.d(TAG, "Create Post button clicked");
+            Intent intent = new Intent(PostsListActivity.this, PostFormActivity.class);
+            startActivity(intent);
+        });
 
         // 接收傳遞過來的 boardId
         int boardId = getIntent().getIntExtra("boardId", -1);
@@ -45,7 +66,7 @@ public class PostsListActivity extends AppCompatActivity {
             return;
         }
 
-        // 調用 API 獲取帖子
+        // 從 API 加載帖子
         fetchPostsFromApi(boardId, 1, 10);
     }
 
@@ -61,6 +82,7 @@ public class PostsListActivity extends AppCompatActivity {
                     postsAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(PostsListActivity.this, "Failed to load posts", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Failed to load posts: " + response.message());
                 }
             }
 

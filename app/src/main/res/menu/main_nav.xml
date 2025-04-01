@@ -22,5 +22,4 @@
         android:icon="@drawable/event"
         android:title="Event" />
 
-
 </menu>

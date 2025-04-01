@@ -15,6 +15,20 @@ public class Post {
     private String createdAt;
     private String imageUrl; // 圖片 URL
     private List<String> tags; // 標籤列表
+    private String authorName;
+    private boolean liked;
+    private List<String> imageUrls;
+
+    // Constructor
+    public Post(int postId, String title, String content, String authorName, String createdAt, boolean liked, List<String> imageUrls) {
+        this.postId = postId;
+        this.title = title;
+        this.content = content;
+        this.authorName = authorName;
+        this.createdAt = createdAt;
+        this.liked = liked;
+        this.imageUrls = imageUrls;
+    }
 
     // Getters 和 Setters
     public int getPostId() {
@@ -111,5 +125,29 @@ public class Post {
 
     public void setTags(List<String> tags) {
         this.tags = tags;
+    }
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    public List<String> getImageUrls() {
+        return imageUrls;
+    }
+
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
     }
 }

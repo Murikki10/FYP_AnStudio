@@ -1,13 +1,18 @@
 package com.example.fyp;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -15,81 +20,204 @@ import retrofit2.Response;
 
 public class PostDetailsActivity extends AppCompatActivity {
 
-    private TextView postTitleTextView, postContentTextView, postLikeCountTextView;
-    private Button likeButton;
+    private static final String TAG = "PostDetailsActivity";
+
     private int postId;
+    private String auth;
+
+    // UI 元素
+    private TextView postTitle, postMetadata, postContent, likeCountTextView;
+    private RecyclerView postImagesRecyclerView, commentsRecyclerView;
+    private Button likeButton, commentButton;
+    private EditText commentInput;
+
+    // 適配器和數據
+    private PostImagesAdapter imagesAdapter;
+    private CommentsAdapter commentsAdapter;
+    private List<String> imageUrls = new ArrayList<>();
+    private List<Comment> commentList = new ArrayList<>();
+
+    // 狀態數據
+    private boolean isLiked = false;
+    private int likeCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_details);
 
-        // 初始化 UI 元件
-        postTitleTextView = findViewById(R.id.postTitleTextView);
-        postContentTextView = findViewById(R.id.postContentTextView);
-        postLikeCountTextView = findViewById(R.id.postLikeCountTextView);
+        // 初始化 UI 元素
+        postTitle = findViewById(R.id.postTitle);
+        postMetadata = findViewById(R.id.postMetadata);
+        postContent = findViewById(R.id.postContent);
+        likeCountTextView = findViewById(R.id.likeCount);
+        postImagesRecyclerView = findViewById(R.id.postImagesRecyclerView);
+        commentsRecyclerView = findViewById(R.id.commentsRecyclerView);
         likeButton = findViewById(R.id.likeButton);
+        commentButton = findViewById(R.id.commentButton);
+        commentInput = findViewById(R.id.commentInput);
 
-        // 獲取 Intent 傳遞的 Post ID
+        // 接收傳遞的 postId 和 authToken
         postId = getIntent().getIntExtra("postId", -1);
-        if (postId == -1) {
-            Toast.makeText(this, "Invalid Post ID", Toast.LENGTH_SHORT).show();
+        auth = getIntent().getStringExtra("auth");
+
+        if (postId == -1 || auth == null || !auth.startsWith("Bearer ")) {
+            Toast.makeText(this, "Invalid post ID or missing auth token.", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Invalid postId or auth token. postId: " + postId + ", auth: " + auth);
             finish();
             return;
         }
 
-        if (!AuthManager.isLoggedIn()) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-            return;
-        }
+        Log.d(TAG, "Received postId: " + postId);
+        Log.d(TAG, "Received auth token: " + auth);
 
-        // 加載帖子詳情
+        // 初始化 RecyclerView
+        setupRecyclerViews();
+
+        // 加載帖子詳情和留言
         fetchPostDetails();
+        fetchComments();
 
-        // 點擊 Like 按鈕
+        // 點擊點贊按鈕
         likeButton.setOnClickListener(v -> toggleLike());
+
+        // 點擊留言按鈕
+        commentButton.setOnClickListener(v -> addComment());
+    }
+
+    private void setupRecyclerViews() {
+        // 設置圖片 RecyclerView
+        imagesAdapter = new PostImagesAdapter(imageUrls);
+        postImagesRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        postImagesRecyclerView.setAdapter(imagesAdapter);
+
+        // 設置留言 RecyclerView
+        commentsAdapter = new CommentsAdapter(commentList);
+        commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        commentsRecyclerView.setAdapter(commentsAdapter);
     }
 
     private void fetchPostDetails() {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        apiService.getPostDetails(postId).enqueue(new Callback<Post>() {
+
+        apiService.getPostDetails(auth, postId).enqueue(new Callback<Post>() {
             @Override
-            public void onResponse(@NonNull Call<Post> call, @NonNull Response<Post> response) {
+            public void onResponse(Call<Post> call, Response<Post> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Post post = response.body();
-                    postTitleTextView.setText(post.getTitle());
-                    postContentTextView.setText(post.getContent());
-                    postLikeCountTextView.setText(String.format("%d Likes", post.getLikeCount()));
+                    Log.d(TAG, "Post details loaded: " + post.toString());
+
+                    // 更新 UI
+                    postTitle.setText(post.getTitle());
+                    String metadata = "By " + post.getAuthorName() + " on " + post.getCreatedAt();
+                    postMetadata.setText(metadata);
+                    postContent.setText(post.getContent());
+
+                    // 更新圖片數據
+                    imageUrls.clear();
+                    imageUrls.addAll(post.getImageUrls());
+                    imagesAdapter.notifyDataSetChanged();
+
+                    // 更新點贊數和點贊狀態
+                    likeCount = post.getLikeCount();
+                    isLiked = post.isLiked(); // 假設後端返回 isLiked 字段
+                    updateLikeUI();
                 } else {
                     Toast.makeText(PostDetailsActivity.this, "Failed to load post details", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Failed to load post details: " + response.message());
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<Post> call, @NonNull Throwable t) {
-                Toast.makeText(PostDetailsActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<Post> call, Throwable t) {
+                Log.e(TAG, "Error loading post details: " + t.getMessage());
+                Toast.makeText(PostDetailsActivity.this, "Error loading post details", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void fetchComments() {
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+
+        apiService.getComments(auth, postId).enqueue(new Callback<List<Comment>>() {
+            @Override
+            public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    commentList.clear();
+                    commentList.addAll(response.body());
+                    commentsAdapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(PostDetailsActivity.this, "Failed to load comments", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Failed to load comments: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Comment>> call, Throwable t) {
+                Log.e(TAG, "Error loading comments: " + t.getMessage());
+                Toast.makeText(PostDetailsActivity.this, "Error loading comments", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void toggleLike() {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        apiService.toggleLike(postId).enqueue(new Callback<Void>() {
+
+        apiService.toggleLike(auth, postId).enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(PostDetailsActivity.this, "Like toggled", Toast.LENGTH_SHORT).show();
-                    fetchPostDetails();
+                    // 切換點贊狀態
+                    isLiked = !isLiked;
+                    likeCount += isLiked ? 1 : -1;
+                    updateLikeUI();
                 } else {
                     Toast.makeText(PostDetailsActivity.this, "Failed to toggle like", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                Toast.makeText(PostDetailsActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e(TAG, "Error toggling like: " + t.getMessage());
+                Toast.makeText(PostDetailsActivity.this, "Error toggling like", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateLikeUI() {
+        // 更新點贊數量
+        likeCountTextView.setText(likeCount + " Likes");
+
+        // 更新按鈕文本
+        likeButton.setText(isLiked ? "Unlike" : "Like");
+    }
+
+    private void addComment() {
+        String content = commentInput.getText().toString().trim();
+        if (content.isEmpty()) {
+            Toast.makeText(this, "Comment cannot be empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+
+        CommentRequest commentRequest = new CommentRequest(content);
+        apiService.addComment(auth, postId, commentRequest).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(PostDetailsActivity.this, "Comment added", Toast.LENGTH_SHORT).show();
+                    commentInput.setText("");
+                    fetchComments();
+                } else {
+                    Toast.makeText(PostDetailsActivity.this, "Failed to add comment", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e(TAG, "Error adding comment: " + t.getMessage());
+                Toast.makeText(PostDetailsActivity.this, "Error adding comment", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -1,5 +1,6 @@
 package com.example.fyp;
 
+
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -45,8 +46,26 @@ public interface ApiService {
     );
 
     // 獲取單個帖子詳情
-    @POST("/api/posts/{postId}")
-    Call<Post> getPostDetails(@Header("Authorization") String token, @Body int postId);
+    @GET("/api/posts/{postId}")
+    Call<Post> getPostDetails(
+            @Header("Authorization") String token,
+            @Path("postId") int postId
+    );
+
+    // 提交留言
+    @POST("/api/posts/{postId}/comments")
+    Call<Void> addComment(
+            @Header("Authorization") String token,
+            @Path("postId") int postId,
+            @Body CommentRequest commentRequest
+    );
+
+    // 獲取留言列表
+    @GET("/api/posts/{postId}/comments")
+    Call<List<Comment>> getComments(
+            @Header("Authorization") String token,
+            @Path("postId") int postId
+    );
 
     // 獲取分區列表
     @GET("/api/boards")
@@ -59,9 +78,6 @@ public interface ApiService {
     @GET("/api/tags")
     Call<List<Tag>> getTags();
 
-    @GET("/api/posts/{postId}")
-    Call<Post> getPostDetails(@Path("postId") int postId);
-
     @PUT("/api/posts/{postId}")
     Call<Post> updatePost(@Path("postId") int postId, @Body Post post);
 
@@ -69,7 +85,10 @@ public interface ApiService {
     Call<Void> deletePost(@Path("postId") int postId);
 
     @POST("/api/posts/{postId}/toggle-like")
-    Call<Void> toggleLike(@Path("postId") int postId);
+    Call<Void> toggleLike(
+            @Header("Authorization") String token,
+            @Path("postId") int postId
+    );
 
     @POST("/api/posts/{postId}/toggle-follow")
     Call<Void> toggleFollow(@Path("postId") int postId);

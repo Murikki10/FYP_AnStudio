@@ -12,8 +12,8 @@ import java.util.List;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHolder> {
 
-    private List<Post> posts;
-    private OnItemClickListener onItemClickListener;
+    private List<Post> posts; // 帖子數據列表
+    private OnItemClickListener onItemClickListener; // 點擊事件接口
 
     // 點擊事件接口
     public interface OnItemClickListener {
@@ -36,14 +36,20 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         Post post = posts.get(position);
+
+        // 綁定數據到 ViewHolder
         holder.titleTextView.setText(post.getTitle());
         holder.contentTextView.setText(post.getContent());
-        holder.likeCountTextView.setText(String.format("%d Likes", post.getLikeCount())); // 顯示點贊數
-        holder.commentCountTextView.setText(String.format("%d Comments", post.getCommentCount())); // 顯示評論數
-        holder.viewCountTextView.setText(String.format("%d Views", post.getViewCount())); // 顯示瀏覽數
+        holder.likeCountTextView.setText(String.format("%d Likes", post.getLikeCount()));
+        holder.commentCountTextView.setText(String.format("%d Comments", post.getCommentCount()));
+        holder.viewCountTextView.setText(String.format("%d Views", post.getViewCount()));
 
-        // 點擊事件
-        holder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick(post));
+        // 設置點擊事件
+        holder.itemView.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(post);
+            }
+        });
     }
 
     @Override
@@ -51,6 +57,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         return posts.size();
     }
 
+    // ViewHolder 類
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView, contentTextView, likeCountTextView, commentCountTextView, viewCountTextView;
 
