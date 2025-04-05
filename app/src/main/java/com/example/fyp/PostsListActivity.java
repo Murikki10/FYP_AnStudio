@@ -24,6 +24,8 @@ public class PostsListActivity extends AppCompatActivity {
     private List<Post> postList;
     private static final String TAG = "PostsListActivity";
 
+    private int boardId; // 保存傳遞過來的 boardId
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,14 +61,22 @@ public class PostsListActivity extends AppCompatActivity {
         });
 
         // 接收傳遞過來的 boardId
-        int boardId = getIntent().getIntExtra("boardId", -1);
+        boardId = getIntent().getIntExtra("boardId", -1);
         if (boardId == -1) {
             Toast.makeText(this, "Invalid board selected.", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        // 從 API 加載帖子
+        // 加載帖子
+        fetchPostsFromApi(boardId, 1, 10);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "Activity resumed, refreshing posts...");
+        // 每次進入頁面時刷新帖子列表
         fetchPostsFromApi(boardId, 1, 10);
     }
 

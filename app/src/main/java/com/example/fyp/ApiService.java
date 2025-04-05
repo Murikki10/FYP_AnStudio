@@ -1,6 +1,8 @@
 package com.example.fyp;
 
 
+import com.google.gson.JsonObject;
+
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -77,6 +79,13 @@ public interface ApiService {
 
     @GET("/api/tags")
     Call<List<Tag>> getTags();
+
+    // 檢查用戶Liked?
+    @GET("/api/posts/{postId}/isLiked")
+    Call<JsonObject> isLiked(
+            @Header("Authorization") String token,
+            @Path("postId") int postId
+    );
 
     @PUT("/api/posts/{postId}")
     Call<Post> updatePost(@Path("postId") int postId, @Body Post post);

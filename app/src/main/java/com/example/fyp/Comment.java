@@ -1,8 +1,11 @@
 package com.example.fyp;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Comment {
     private int commentId;
     private String content;
+    @SerializedName("author") // 映射後端字段
     private String authorName;
     private String createdAt;
 

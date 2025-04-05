@@ -22,16 +22,18 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
     @NonNull
     @Override
     public CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Inflate the comment item layout
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_comment, parent, false);
         return new CommentViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
+        // Bind data to the views
         Comment comment = commentList.get(position);
-        holder.author.setText(comment.getAuthorName());
-        holder.content.setText(comment.getContent());
-        holder.date.setText(comment.getCreatedAt());
+        holder.authorTextView.setText(comment.getAuthorName()); // 顯示留言用戶名稱
+        holder.contentTextView.setText(comment.getContent()); // 顯示留言內容
+        holder.dateTextView.setText(comment.getCreatedAt()); // 顯示留言時間
     }
 
     @Override
@@ -39,15 +41,15 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
         return commentList.size();
     }
 
-    // ViewHolder Class
+    // ViewHolder class
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
-        TextView author, content, date;
+        TextView authorTextView, contentTextView, dateTextView;
 
         public CommentViewHolder(@NonNull View itemView) {
             super(itemView);
-            author = itemView.findViewById(R.id.commentAuthor);
-            content = itemView.findViewById(R.id.commentContent);
-            date = itemView.findViewById(R.id.commentDate);
+            authorTextView = itemView.findViewById(R.id.commentAuthor); // 留言用戶名稱
+            contentTextView = itemView.findViewById(R.id.commentContent); // 留言內容
+            dateTextView = itemView.findViewById(R.id.commentDate); // 留言時間
         }
     }
 }
