@@ -10,7 +10,7 @@ public class Event {
     private String description;
     private String start_time;
     private String end_time;
-
+    private boolean isRegistered;
     private String location;
 
     // Getters and Setters
@@ -80,5 +80,12 @@ public class Event {
             e.printStackTrace();
             return dateString; // 如果解析失敗，返回原始日期
         }
+    }
+    public boolean isRegistered() {
+        return isRegistered;
+    }
+
+    public void setRegistered(boolean registered) {
+        isRegistered = registered;
     }
 }

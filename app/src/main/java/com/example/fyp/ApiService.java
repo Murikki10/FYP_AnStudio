@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 
 import java.util.List;
 
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -169,11 +170,7 @@ public interface ApiService {
 
     // 報名活動
     @POST("/api/events/{eventId}/register")
-    Call<ResponseBody> registerEvent(
-            @Header("Authorization") String token,
-            @Path("eventId") int eventId,
-            @Body RegistrationRequest registrationRequest
-    );
+    Call<ResponseBody> registerEvent(@Path("eventId") int eventId, @Body RequestBody requestBody);
 
     // 獲取活動的報名記錄
     @GET("/api/events/{eventId}/registrations")

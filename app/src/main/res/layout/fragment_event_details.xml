@@ -85,5 +85,14 @@
             android:backgroundTint="@color/primaryColor"
             android:textColor="@android:color/white"
             android:layout_marginTop="16dp" />
+
+        <!-- QR Code ImageView -->
+        <ImageView
+            android:id="@+id/qrCodeImageView"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:contentDescription="QR Code"
+            android:visibility="gone" /> <!-- 默認隱藏 QR Code -->
     </LinearLayout>
 </ScrollView>

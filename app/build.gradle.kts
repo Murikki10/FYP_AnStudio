@@ -75,4 +75,8 @@ dependencies {
     implementation ("com.google.android.material:material:1.9.0")
     implementation ("androidx.cardview:cardview:1.0.0")
 
+    //QR Code
+    implementation ("com.google.zxing:core:3.5.1")
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+
 }
