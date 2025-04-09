@@ -58,6 +58,8 @@
         <activity android:name=".AnalysisActivity"/>
 
         <activity android:name=".BoardListActivity"/>
+        <activity android:name=".EventListActivity"/>
+        <activity android:name=".EventDetailsActivity"/>
 
 
     </application>

@@ -10,4 +10,6 @@
     <color name="primaryColor">#3F51B5</color> <!-- 藍色，可以根據需求修改 -->
     <color name="primaryColorDark">#303F9F</color> <!-- 深藍色 -->
     <color name="accentColor">#FF4081</color> <!-- 粉色，用於輔助色 -->
+    <color name="green">#00FF00</color>
+    <color name="blue">#3F51B5</color>
 </resources>

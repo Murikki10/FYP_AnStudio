@@ -17,7 +17,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiService {
-
+    // ========= 用戶相關 API =========
     @POST("api/auth/register")
     Call<ResponseBody> registerUser(@Body RegisterRequest request);
 
@@ -39,13 +39,17 @@ public interface ApiService {
     @GET("api/user/profile")
     Call<UserProfileResponse> getUserProfile(@Header("Authorization") String token);
 
-
+    // ========= 帖子相關 API =========
     @GET("/api/posts")
     Call<ApiResponse> getPosts(
             @Query("boardId") int boardId,
             @Query("page") int page,
             @Query("limit") int limit
     );
+
+    //Board Follow
+    @POST("/api/boards/{id}/follow")
+    Call<Void> updateFollowStatus(@Path("id") int boardId, @Body FollowRequest followRequest);
 
     // 獲取單個帖子詳情
     @GET("/api/posts/{postId}")
@@ -86,7 +90,6 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Path("postId") int postId
     );
-
     @PUT("/api/posts/{postId}")
     Call<Post> updatePost(@Path("postId") int postId, @Body Post post);
 
@@ -109,6 +112,7 @@ public interface ApiService {
             @Query("limit") int limit
     );
 
+    // ========= 計劃 & 視頻相關 API =========
     @POST("api/createPlan")
     Call<CreatePlanResponse> createPlan(
             @Header("Authorization") String token,
@@ -153,8 +157,52 @@ public interface ApiService {
             @Body PlanIdRequest planIdRequest
     );
 
-    @POST("/api/boards/{id}/follow")
-    Call<Void> updateFollowStatus(@Path("id") int boardId, @Body FollowRequest followRequest);
+    // ========= 活動 (Event) 相關 API =========
+
+    // 獲取所有活動列表
+    @GET("/api/events")
+    Call<List<Event>> getAllEvents();
+
+    // 獲取單個活動詳情
+    @GET("/api/events/{eventId}")
+    Call<Event> getEventDetails(@Path("eventId") int eventId);
+
+    // 報名活動
+    @POST("/api/events/{eventId}/register")
+    Call<ResponseBody> registerEvent(
+            @Header("Authorization") String token,
+            @Path("eventId") int eventId,
+            @Body RegistrationRequest registrationRequest
+    );
+
+    // 獲取活動的報名記錄
+    @GET("/api/events/{eventId}/registrations")
+    Call<List<RegistrationResponse>> getEventRegistrations(
+            @Header("Authorization") String token,
+            @Path("eventId") int eventId
+    );
+
+    // 用戶 Check-in
+    @POST("/api/events/{eventId}/check-in")
+    Call<ResponseBody> checkInEvent(
+            @Header("Authorization") String token,
+            @Path("eventId") int eventId,
+            @Body CheckInRequest checkInRequest
+    );
+
+    // 獲取活動的表單欄位
+    @GET("/api/events/{eventId}/form-fields")
+    Call<List<FormField>> getEventFormFields(
+            @Path("eventId") int eventId
+    );
+
+    // 創建活動
+    @POST("/api/events")
+    Call<ResponseBody> createEvent(
+            @Header("Authorization") String token,
+            @Body EventRequest eventRequest
+    );
+
 
 
 }

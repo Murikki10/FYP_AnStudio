@@ -56,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, BoardListActivity.class);
                 startActivity(intent);
                 return false;
-            } else if (item.getItemId() == R.id.nav_competition) {
-                selectedFragment = new CompetitionFragment();
-                toolbar.setTitle("Competition");
+            } else if (item.getItemId() == R.id.nav_event) {
+                selectedFragment = new EventHomeFragment();
+                toolbar.setTitle("Event");
             } else if (item.getItemId() == R.id.nav_home) {
                 selectedFragment = new MainFragment();
                 toolbar.setTitle("Home");
