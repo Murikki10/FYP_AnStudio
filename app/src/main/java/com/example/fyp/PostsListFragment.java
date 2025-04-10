@@ -1,10 +1,12 @@
 package com.example.fyp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,8 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -29,7 +29,6 @@ public class PostsListFragment extends Fragment {
     private static final String TAG = "PostsListFragment";
 
     private RecyclerView postsRecyclerView;
-    private ChipGroup boardChipGroup;
     private PostsAdapter postsAdapter;
     private List<Post> postList;
     private List<Board> boardList; // 保存所有 board 数据
@@ -71,23 +70,20 @@ public class PostsListFragment extends Fragment {
         });
         postsRecyclerView.setAdapter(postsAdapter);
 
-        // 初始化 ChipGroup
-        boardChipGroup = view.findViewById(R.id.boardChipGroup);
+        // 动态加载 Board 按钮
+        fetchBoards(view);
 
         // 初始化浮动按钮
         FloatingActionButton fabCreatePost = view.findViewById(R.id.fab_create_post);
         fabCreatePost.setOnClickListener(v -> navigateToCreatePost());
 
-        // 加载 Board 和 Post 数据
-        fetchBoards();
-
         return view;
     }
 
     /**
-     * 加载 Board 数据并动态生成 Chips
+     * 加载 Board 数据并显示为按钮
      */
-    private void fetchBoards() {
+    private void fetchBoards(View view) {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
         apiService.getBoards().enqueue(new Callback<List<Board>>() {
@@ -95,7 +91,7 @@ public class PostsListFragment extends Fragment {
             public void onResponse(Call<List<Board>> call, Response<List<Board>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     boardList = response.body();
-                    setupBoardChips(boardList); // 初始化 Chips
+                    setupBoardButtons(view, boardList); // 初始化 Board 按钮
                 } else {
                     Toast.makeText(requireContext(), "Failed to load boards", Toast.LENGTH_SHORT).show();
                 }
@@ -110,31 +106,25 @@ public class PostsListFragment extends Fragment {
     }
 
     /**
-     * 初始化 Board Chips
+     * 初始化 Board 按钮
      */
-    private void setupBoardChips(List<Board> boards) {
-        boardChipGroup.removeAllViews(); // 清空旧 Chip
+    private void setupBoardButtons(View view, List<Board> boards) {
+        ViewGroup boardButtonContainer = view.findViewById(R.id.boardButtonContainer);
+        boardButtonContainer.removeAllViews(); // 清空旧按钮
 
         for (Board board : boards) {
-            Chip chip = new Chip(requireContext());
-            chip.setText(board.getBoardName());
-            chip.setCheckable(true);
-            chip.setCheckedIconVisible(false);
-            chip.setChipBackgroundColorResource(R.color.chip_background_selector);
-            chip.setTextColor(getResources().getColorStateList(R.color.chip_text_selector, null));
-
-            chip.setOnClickListener(v -> {
+            Button button = new Button(requireContext());
+            button.setText(board.getBoardName());
+            button.setOnClickListener(v -> {
                 selectedBoardId = board.getBoardId();
                 fetchPosts(); // 加载选中分区的帖子
             });
-
-            boardChipGroup.addView(chip);
+            boardButtonContainer.addView(button);
         }
 
-        // 默认选中第一个 Board
+        // 默认加载第一个 Board 的帖子
         if (!boards.isEmpty()) {
             selectedBoardId = boards.get(0).getBoardId();
-            ((Chip) boardChipGroup.getChildAt(0)).setChecked(true);
             fetchPosts();
         }
     }
@@ -174,11 +164,13 @@ public class PostsListFragment extends Fragment {
      * 跳转到创建帖子页面
      */
     private void navigateToCreatePost() {
-        PostFormFragment fragment = new PostFormFragment();
-        requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit();
+      //  PostFormFragment fragment = new PostFormFragment();
+        //requireActivity().getSupportFragmentManager()
+          //      .beginTransaction()
+            //    .replace(R.id.fragment_container, fragment)
+              //  .addToBackStack(null)
+                //.commit();
+        Intent intent = new Intent(requireContext(), PostFormActivity.class);
+        startActivity(intent);
     }
 }

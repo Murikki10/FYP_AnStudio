@@ -23,6 +23,11 @@
             android:text="Welcome to the Main Page!"
             android:textSize="18sp"
             android:textStyle="bold" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/MK"/>
     </RelativeLayout>
     </ScrollView>
 </LinearLayout>
