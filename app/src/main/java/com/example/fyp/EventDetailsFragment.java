@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import org.json.JSONException;
@@ -42,10 +43,22 @@ public class EventDetailsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // 加载 Fragment 的布局
         View view = inflater.inflate(R.layout.fragment_event_details, container, false);
 
-        // 初始化视图
+        // 初始化 Toolbar
+        androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar); // 设置为 ActionBar
+        if (((AppCompatActivity) requireActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true); // 启用返回按钮
+            ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false); // 隐藏默认标题
+        }
+
+        // 处理导航返回事件
+        toolbar.setNavigationOnClickListener(v -> {
+            requireActivity().onBackPressed(); // 返回上一层
+        });
+
+        // 初始化其他视图
         buttonRegister = view.findViewById(R.id.buttonRegister);
         textViewTitle = view.findViewById(R.id.textViewTitle);
         textViewDescription = view.findViewById(R.id.textViewDescription);
@@ -54,22 +67,18 @@ public class EventDetailsFragment extends Fragment {
         textViewLocation = view.findViewById(R.id.textViewLocation);
         qrCodeImageView = view.findViewById(R.id.qrCodeImageView);
 
-        // 默认隐藏 QR Code
         qrCodeImageView.setVisibility(View.GONE);
 
-        // 获取传递的 eventId
         if (getArguments() != null) {
             eventId = getArguments().getInt("event_id", -1);
         }
 
         if (eventId != -1) {
-            // 加载活动详情
             fetchEventDetails(eventId);
         }
 
-        // 注册按钮点击事件
         buttonRegister.setOnClickListener(v -> {
-            String userToken = "YOUR_USER_TOKEN"; // 替换成实际用户的 Token
+            String userToken = "YOUR_USER_TOKEN";
             registerForEvent(eventId, userToken);
         });
 

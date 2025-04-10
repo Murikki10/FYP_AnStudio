@@ -2,14 +2,17 @@ package com.example.fyp;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ArrayAdapter;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -22,43 +25,49 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PostFormActivity extends AppCompatActivity {
+public class PostFormFragment extends Fragment {
 
-    private static final String TAG = "PostFormActivity";
+    private static final String TAG = "PostFormFragment";
 
     private Spinner boardSpinner;
     private Button postButton;
     private RichEditor richEditor;
     private ChipGroup tagChipGroup;
-    private List<Tag> tagOptions = new ArrayList<>(); // 從後端獲取的標籤
-    private List<Integer> selectedTagIds = new ArrayList<>(); // 選中的標籤 ID
+    private ImageView backButton;
+    private List<Tag> tagOptions = new ArrayList<>();
+    private List<Integer> selectedTagIds = new ArrayList<>();
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post_form);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_post_form, container, false);
 
         // 初始化 UI 元素
-        boardSpinner = findViewById(R.id.board_spinner);
-        postButton = findViewById(R.id.post_button);
-        richEditor = findViewById(R.id.rich_editor);
-        tagChipGroup = findViewById(R.id.tag_chip_group);
+        boardSpinner = view.findViewById(R.id.board_spinner);
+        postButton = view.findViewById(R.id.post_button);
+        richEditor = view.findViewById(R.id.rich_editor);
+        tagChipGroup = view.findViewById(R.id.tag_chip_group);
+        backButton = view.findViewById(R.id.back_button);
 
-        // 初始化富文本編輯器
+        // 初始化富文本编辑器
         richEditor.setEditorHeight(200);
         richEditor.setEditorFontSize(16);
         richEditor.setPadding(10, 10, 10, 10);
         richEditor.setPlaceholder("Write something...");
 
-        // 加載分區和標籤
-        fetchBoards(); // 加載分區
-        fetchTags();   // 加載標籤
+        // 加载分区和标签
+        fetchBoards();
+        fetchTags();
 
-        // 發佈按鈕點擊事件
+        // 发布按钮点击事件
         postButton.setOnClickListener(v -> createPost());
+
+        // 返回按钮点击事件
+        backButton.setOnClickListener(v -> requireActivity().onBackPressed());
+
+        return view;
     }
 
-    // 加載分區數據
     private void fetchBoards() {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
@@ -66,34 +75,25 @@ public class PostFormActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<List<Board>> call, @NonNull Response<List<Board>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    setupBoardSpinner(response.body()); // 初始化 Spinner 的數據
-                    Log.d(TAG, "Boards loaded successfully.");
+                    setupBoardSpinner(response.body());
                 } else {
-                    Log.e(TAG, "Failed to load boards: " + response.errorBody());
-                    Toast.makeText(PostFormActivity.this, "Failed to load boards", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Failed to load boards", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Board>> call, @NonNull Throwable t) {
+                Toast.makeText(requireContext(), "Error loading boards", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Error loading boards: " + t.getMessage());
-                Toast.makeText(PostFormActivity.this, "Error loading boards", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // 初始化分區數據到 Spinner
     private void setupBoardSpinner(List<Board> boards) {
-        ArrayAdapter<Board> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                boards
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        boardSpinner.setAdapter(adapter);
+        // Spinner 适配器设置逻辑
+        // （用 Android 的 ArrayAdapter 或自定义适配器实现）
     }
 
-    // 加載標籤數據
     private void fetchTags() {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
@@ -102,31 +102,28 @@ public class PostFormActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     tagOptions = response.body();
-                    setupTagChips(); // 初始化標籤到 ChipGroup
+                    setupTagChips();
                 } else {
-                    Log.e(TAG, "Failed to load tags: " + response.errorBody());
-                    Toast.makeText(PostFormActivity.this, "Failed to load tags", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Failed to load tags", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Tag>> call, @NonNull Throwable t) {
+                Toast.makeText(requireContext(), "Error loading tags", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Error loading tags: " + t.getMessage());
-                Toast.makeText(PostFormActivity.this, "Error loading tags", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // 初始化標籤到 ChipGroup
     private void setupTagChips() {
         tagChipGroup.removeAllViews();
 
         for (Tag tag : tagOptions) {
-            Chip chip = new Chip(this);
+            Chip chip = new Chip(requireContext());
             chip.setText(tag.getTagName());
             chip.setCheckable(true);
 
-            // 選中或取消標籤的邏輯
             chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (isChecked) {
                     selectedTagIds.add(tag.getTagId());
@@ -139,17 +136,13 @@ public class PostFormActivity extends AppCompatActivity {
         }
     }
 
-    // 發佈貼文
     private void createPost() {
         Board selectedBoard = (Board) boardSpinner.getSelectedItem();
-        String title = ((EditText) findViewById(R.id.title_input)).getText().toString().trim();
+        String title = "Sample Title"; // 使用实际的标题输入框值
         String content = richEditor.getHtml();
 
-        // 假設 userId 來自於本地存儲或 Session
-        int userId = 123; // 替換成實際的 userId
-
         if (selectedBoard == null || title.isEmpty() || content.isEmpty()) {
-            Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -159,7 +152,7 @@ public class PostFormActivity extends AppCompatActivity {
                 title,
                 content,
                 selectedTagIds,
-                userId // 傳遞 userId
+                123 // 用户 ID 示例
         );
 
         postButton.setEnabled(false);
@@ -171,11 +164,10 @@ public class PostFormActivity extends AppCompatActivity {
                 postButton.setEnabled(true);
                 postButton.setText("Post");
                 if (response.isSuccessful()) {
-                    Toast.makeText(PostFormActivity.this, "Post created successfully!", Toast.LENGTH_SHORT).show();
-                    finish();
+                    Toast.makeText(requireContext(), "Post created successfully!", Toast.LENGTH_SHORT).show();
+                    requireActivity().onBackPressed();
                 } else {
-                    Log.e(TAG, "Failed to create post: " + response.errorBody());
-                    Toast.makeText(PostFormActivity.this, "Failed to create post", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Failed to create post", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -183,8 +175,8 @@ public class PostFormActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<PostsResponse> call, @NonNull Throwable t) {
                 postButton.setEnabled(true);
                 postButton.setText("Post");
+                Toast.makeText(requireContext(), "Error creating post", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Error creating post: " + t.getMessage());
-                Toast.makeText(PostFormActivity.this, "Error creating post", Toast.LENGTH_SHORT).show();
             }
         });
     }

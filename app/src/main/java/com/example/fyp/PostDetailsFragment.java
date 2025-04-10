@@ -2,12 +2,17 @@ package com.example.fyp;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,9 +25,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PostDetailsActivity extends AppCompatActivity {
+public class PostDetailsFragment extends Fragment {
 
-    private static final String TAG = "PostDetailsActivity";
+    private static final String TAG = "PostDetailsFragment";
 
     private int postId;
     private String auth;
@@ -43,32 +48,33 @@ public class PostDetailsActivity extends AppCompatActivity {
     private boolean isLiked = false;
     private int likeCount = 0;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post_details);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_post_details, container, false);
 
         // 初始化 UI 元素
-        postTitle = findViewById(R.id.postTitle);
-        postMetadata = findViewById(R.id.postMetadata);
-        postContent = findViewById(R.id.postContent);
-        likeCountTextView = findViewById(R.id.likeCount);
-        commentCountTextView = findViewById(R.id.commentCount); // 綁定留言數量的 TextView
-        postImagesRecyclerView = findViewById(R.id.postImagesRecyclerView);
-        commentsRecyclerView = findViewById(R.id.commentsRecyclerView);
-        commentInput = findViewById(R.id.commentInput);
-        likeButton = findViewById(R.id.likeButton);
-        commentButton = findViewById(R.id.commentButton);
+        postTitle = view.findViewById(R.id.postTitle);
+        postMetadata = view.findViewById(R.id.postMetadata);
+        postContent = view.findViewById(R.id.postContent);
+        likeCountTextView = view.findViewById(R.id.likeCount);
+        commentCountTextView = view.findViewById(R.id.commentCount);
+        postImagesRecyclerView = view.findViewById(R.id.postImagesRecyclerView);
+        commentsRecyclerView = view.findViewById(R.id.commentsRecyclerView);
+        commentInput = view.findViewById(R.id.commentInput);
+        likeButton = view.findViewById(R.id.likeButton);
+        commentButton = view.findViewById(R.id.commentButton);
 
         // 接收傳遞的 postId 和 authToken
-        postId = getIntent().getIntExtra("postId", -1);
-        auth = getIntent().getStringExtra("auth");
+        if (getArguments() != null) {
+            postId = getArguments().getInt("postId", -1);
+            auth = getArguments().getString("auth", null);
+        }
 
         if (postId == -1 || auth == null || !auth.startsWith("Bearer ")) {
-            Toast.makeText(this, "Invalid post ID or missing auth token.", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Invalid postId or auth token. postId: " + postId + ", auth: " + auth);
-            finish();
-            return;
+            Toast.makeText(requireContext(), "Invalid post ID or missing token.", Toast.LENGTH_SHORT).show();
+            requireActivity().onBackPressed();
+            return view;
         }
 
         Log.d(TAG, "Received postId: " + postId);
@@ -77,26 +83,28 @@ public class PostDetailsActivity extends AppCompatActivity {
         // 初始化 RecyclerView
         setupRecyclerViews();
 
-        // 加載帖子詳情和留言
+        // 加載帖子詳情和評論
         fetchPostDetails();
         fetchComments();
 
         // 點擊點贊按鈕
         likeButton.setOnClickListener(v -> toggleLike());
 
-        // 點擊留言按鈕
+        // 點擊評論按鈕
         commentButton.setOnClickListener(v -> addComment());
+
+        return view;
     }
 
     private void setupRecyclerViews() {
         // 設置圖片 RecyclerView
         imagesAdapter = new PostImagesAdapter(imageUrls);
-        postImagesRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        postImagesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         postImagesRecyclerView.setAdapter(imagesAdapter);
 
-        // 設置留言 RecyclerView
+        // 設置評論 RecyclerView
         commentsAdapter = new CommentsAdapter(commentList);
-        commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        commentsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         commentsRecyclerView.setAdapter(commentsAdapter);
     }
 
@@ -128,7 +136,7 @@ public class PostDetailsActivity extends AppCompatActivity {
                     // 獲取點贊狀態
                     fetchLikeStatus();
                 } else {
-                    Toast.makeText(PostDetailsActivity.this, "Failed to load post details", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Failed to load post details", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Failed to load post details: " + response.message());
                 }
             }
@@ -136,7 +144,7 @@ public class PostDetailsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Post> call, Throwable t) {
                 Log.e(TAG, "Error loading post details: " + t.getMessage());
-                Toast.makeText(PostDetailsActivity.this, "Error loading post details", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Error loading post details", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -152,11 +160,11 @@ public class PostDetailsActivity extends AppCompatActivity {
                     commentList.addAll(response.body());
                     commentsAdapter.notifyDataSetChanged();
 
-                    // 更新留言數量
+                    // 更新評論數量
                     int commentCount = commentList.size();
                     commentCountTextView.setText(commentCount + " Comments");
                 } else {
-                    Toast.makeText(PostDetailsActivity.this, "Failed to load comments", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Failed to load comments", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Failed to load comments: " + response.message());
                 }
             }
@@ -164,7 +172,7 @@ public class PostDetailsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Comment>> call, Throwable t) {
                 Log.e(TAG, "Error loading comments: " + t.getMessage());
-                Toast.makeText(PostDetailsActivity.this, "Error loading comments", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Error loading comments", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -180,7 +188,7 @@ public class PostDetailsActivity extends AppCompatActivity {
                     isLiked = responseBody.get("isLiked").getAsBoolean(); // 從返回值解析點贊狀態
                     updateLikeUI();
                 } else {
-                    Toast.makeText(PostDetailsActivity.this, "Failed to fetch like status", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Failed to fetch like status", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Failed to fetch like status: " + response.message());
                 }
             }
@@ -188,7 +196,7 @@ public class PostDetailsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Log.e(TAG, "Error fetching like status: " + t.getMessage());
-                Toast.makeText(PostDetailsActivity.this, "Error fetching like status", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Error fetching like status", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -204,18 +212,15 @@ public class PostDetailsActivity extends AppCompatActivity {
                     isLiked = !isLiked;
                     likeCount += isLiked ? 1 : -1;
                     updateLikeUI();
-
-                    // 自動刷新帖子詳情和留言
-                    refreshData();
                 } else {
-                    Toast.makeText(PostDetailsActivity.this, "Failed to toggle like", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Failed to toggle like", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(requireContext(), "Error toggling like", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Error toggling like: " + t.getMessage());
-                Toast.makeText(PostDetailsActivity.this, "Error toggling like", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -223,46 +228,33 @@ public class PostDetailsActivity extends AppCompatActivity {
     private void addComment() {
         String content = commentInput.getText().toString().trim();
         if (content.isEmpty()) {
-            Toast.makeText(this, "Comment cannot be empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Comment cannot be empty", Toast.LENGTH_SHORT).show();
             return;
         }
 
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
-        CommentRequest commentRequest = new CommentRequest(content);
-        apiService.addComment(auth, postId, commentRequest).enqueue(new Callback<Void>() {
+        apiService.addComment(auth, postId, new CommentRequest(content)).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(PostDetailsActivity.this, "Comment added", Toast.LENGTH_SHORT).show();
                     commentInput.setText("");
-
-                    // 自動刷新帖子詳情和留言
-                    refreshData();
+                    fetchComments();
                 } else {
-                    Toast.makeText(PostDetailsActivity.this, "Failed to add comment", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Failed to add comment", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(requireContext(), "Error adding comment", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Error adding comment: " + t.getMessage());
-                Toast.makeText(PostDetailsActivity.this, "Error adding comment", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void updateLikeUI() {
-        // 更新點贊數量
         likeCountTextView.setText(likeCount + " Likes");
-
-        // 更新按鈕圖片
         likeButton.setImageResource(isLiked ? R.drawable.ic_like_active : R.drawable.ic_like_inactive);
-    }
-
-    private void refreshData() {
-        // 刷新帖子詳情和留言
-        fetchPostDetails();
-        fetchComments();
     }
 }

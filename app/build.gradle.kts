@@ -61,6 +61,7 @@ dependencies {
     implementation (libs.glide)
     annotationProcessor (libs.compiler)
 
+
     // CameraX
     implementation("androidx.camera:camera-core:1.4.0-alpha02")
     implementation ("androidx.camera:camera-camera2:1.4.0-alpha02")

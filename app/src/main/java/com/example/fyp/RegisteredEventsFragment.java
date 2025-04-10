@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,20 +39,30 @@ public class RegisteredEventsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // 加载布局
         View view = inflater.inflate(R.layout.fragment_registered_events, container, false);
 
-        // 初始化视图
+        // 初始化 Toolbar
+        androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar); // 设置为 ActionBar
+        if (((AppCompatActivity) requireActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true); // 启用返回按钮
+            ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false); // 隐藏默认标题
+        }
+
+        // 处理导航返回事件
+        toolbar.setNavigationOnClickListener(v -> {
+            requireActivity().onBackPressed(); // 返回上一层
+        });
+
+        // 初始化其他视图
         progressBar = view.findViewById(R.id.progressBar);
         noEventsTextView = view.findViewById(R.id.noEventsTextView);
         recyclerView = view.findViewById(R.id.recyclerViewEvents);
 
-        // 设置 RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new RegisteredEventsAdapter(registeredEvents, this::onEventClick);
         recyclerView.setAdapter(adapter);
 
-        // 加载注册活动
         fetchRegisteredEvents();
 
         return view;

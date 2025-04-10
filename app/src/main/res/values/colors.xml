@@ -12,4 +12,8 @@
     <color name="accentColor">#FF4081</color> <!-- 粉色，用於輔助色 -->
     <color name="green">#00FF00</color>
     <color name="blue">#3F51B5</color>
+    <color name="chip_text_default">#000000</color>
+    <color name="chip_text_checked">#FFFFFF</color>
+    <color name="chip_background_default">#E0E0E0</color>
+    <color name="chip_background_checked">#6200EE</color>
 </resources>

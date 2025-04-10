@@ -52,7 +52,7 @@ public class BoardListActivity extends AppCompatActivity {
             public void onBoardClick(int boardId) {
                 Log.d(TAG, "Board clicked with boardId: " + boardId);
                 // 傳遞 boardId 到帖子列表頁面
-                Intent intent = new Intent(BoardListActivity.this, PostsListActivity.class);
+                Intent intent = new Intent(BoardListActivity.this, PostsListFragment.class);
                 intent.putExtra("boardId", boardId); // 傳遞 boardId
                 startActivity(intent);
             }
