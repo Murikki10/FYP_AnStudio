@@ -2,6 +2,8 @@ package com.example.fyp;
 
 import android.icu.text.SimpleDateFormat;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 public class Event {
@@ -12,6 +14,9 @@ public class Event {
     private String end_time;
     private boolean isRegistered;
     private String location;
+    @SerializedName("qr_code")
+    private String qrCode;
+
 
     // Getters and Setters
     public int getEventId() {
@@ -87,5 +92,12 @@ public class Event {
 
     public void setRegistered(boolean registered) {
         isRegistered = registered;
+    }
+    public String getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
     }
 }

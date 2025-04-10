@@ -179,6 +179,10 @@ public interface ApiService {
             @Path("eventId") int eventId
     );
 
+    //獲取用戶註冊的活動列表
+    @GET("api/users/registered-events")
+    Call<List<Event>> getRegisteredEvents(@Header("Authorization") String token);
+
     // 用戶 Check-in
     @POST("/api/events/{eventId}/check-in")
     Call<ResponseBody> checkInEvent(

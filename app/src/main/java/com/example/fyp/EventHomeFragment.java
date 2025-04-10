@@ -34,7 +34,7 @@ public class EventHomeFragment extends Fragment {
         // 報名記錄按鈕點擊事件
         btnRegistration.setOnClickListener(v -> {
             // 替換 Fragment 為 RegistrationRecordFragment
-           // replaceFragment(new RegistrationRecordFragment());
+            replaceFragment(new RegisteredEventsFragment());
         });
 
         // 直播入口按鈕點擊事件

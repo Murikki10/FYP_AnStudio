@@ -22,9 +22,10 @@
         <View
             android:id="@+id/toolbarDivider"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#D3D3D3" /> <!-- 灰色分隔線 -->
+            android:layout_height="0.5dp"
+            android:background="?attr/colorControlHighlight" />
 
+        <!-- 活动标题 -->
         <TextView
             android:id="@+id/textViewTitle"
             android:layout_width="match_parent"
@@ -35,12 +36,13 @@
             android:textStyle="bold"
             android:paddingBottom="12dp" />
 
+        <!-- 分隔线 -->
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#E0E0E0"
-            android:paddingBottom="12dp" />
+            android:layout_height="0.5dp"
+            android:background="?attr/colorControlHighlight" />
 
+        <!-- 活动描述 -->
         <TextView
             android:id="@+id/textViewDescription"
             android:layout_width="match_parent"
@@ -50,6 +52,7 @@
             android:textColor="#666"
             android:paddingBottom="12dp" />
 
+        <!-- 活动开始时间 -->
         <TextView
             android:id="@+id/textViewStartTime"
             android:layout_width="match_parent"
@@ -59,6 +62,7 @@
             android:textColor="#555"
             android:paddingBottom="8dp" />
 
+        <!-- 活动结束时间 -->
         <TextView
             android:id="@+id/textViewEndTime"
             android:layout_width="match_parent"
@@ -68,6 +72,7 @@
             android:textColor="#555"
             android:paddingBottom="8dp" />
 
+        <!-- 活动地点 -->
         <TextView
             android:id="@+id/textViewLocation"
             android:layout_width="match_parent"
@@ -77,6 +82,7 @@
             android:textColor="#555"
             android:paddingBottom="12dp" />
 
+        <!-- 注册按钮 -->
         <Button
             android:id="@+id/buttonRegister"
             android:layout_width="match_parent"
@@ -86,13 +92,23 @@
             android:textColor="@android:color/white"
             android:layout_marginTop="16dp" />
 
-        <!-- QR Code ImageView -->
+        <!-- QR Code -->
         <ImageView
             android:id="@+id/qrCodeImageView"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_gravity="center"
             android:contentDescription="QR Code"
-            android:visibility="gone" /> <!-- 默認隱藏 QR Code -->
+            android:visibility="gone"
+            android:layout_marginTop="32dp" />
+
+        <!-- Loading Indicator -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
     </LinearLayout>
 </ScrollView>
