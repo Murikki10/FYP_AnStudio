@@ -9,6 +9,10 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".Starter"
@@ -37,9 +41,7 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".ChangePasswordActivity" />
-        <activity android:name=".PostDetailsActivity"/>
         <activity android:name=".PostFormActivity"/>
-        <activity android:name=".PostsListActivity"/>
         <activity android:name=".SearchActivity"/>
         <activity android:name=".WorkoutActivity" />
         <activity android:name=".YogaVideoActivity" />
@@ -58,8 +60,8 @@
         <activity android:name=".AnalysisActivity"/>
 
         <activity android:name=".BoardListActivity"/>
-        <activity android:name=".EventListActivity"/>
-        <activity android:name=".EventDetailsActivity"/>
+        <activity android:name=".LiveStreamActivity"/>
+
 
 
     </application>

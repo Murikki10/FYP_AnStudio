@@ -1,5 +1,6 @@
 package com.example.fyp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,8 +40,9 @@ public class EventHomeFragment extends Fragment {
 
         // 直播入口按鈕點擊事件
         btnLiveStream.setOnClickListener(v -> {
-            // 替換 Fragment 為 LiveStreamFragment
-           // replaceFragment(new LiveStreamFragment());
+            // 创建 Intent 跳转到 LiveStreamActivity
+            Intent intent = new Intent(getActivity(), LiveStreamActivity.class);
+            startActivity(intent);
         });
 
         return view;

@@ -22,4 +22,8 @@
         android:icon="@drawable/event"
         android:title="Event" />
 
+    <item
+        android:id="@+id/live"
+        android:icon="@drawable/livestream"
+        android:title="Live Stream" />
 </menu>
