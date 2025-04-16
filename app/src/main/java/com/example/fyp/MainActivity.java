@@ -59,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.nav_home) {
                 selectedFragment = new MainFragment();
                 toolbar.setTitle("Home");
+            }   else if (item.getItemId() == R.id.live) {
+                selectedFragment = new LiveStreamFragment();
+                toolbar.setTitle("Live Stream");
             }
 
             // 如果選中的 Fragment 不為空，執行 Fragment 替換

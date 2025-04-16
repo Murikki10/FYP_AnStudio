@@ -24,7 +24,6 @@ public class EventHomeFragment extends Fragment {
         // 獲取按鈕
         Button btnEventList = view.findViewById(R.id.btnEventList);
         Button btnRegistration = view.findViewById(R.id.btnRegistration);
-        Button btnLiveStream = view.findViewById(R.id.btnLiveStream);
 
         // 活動列表按鈕點擊事件
         btnEventList.setOnClickListener(v -> {
@@ -38,12 +37,6 @@ public class EventHomeFragment extends Fragment {
             replaceFragment(new RegisteredEventsFragment());
         });
 
-        // 直播入口按鈕點擊事件
-        btnLiveStream.setOnClickListener(v -> {
-            // 创建 Intent 跳转到 LiveStreamActivity
-            Intent intent = new Intent(getActivity(), LiveStreamActivity.class);
-            startActivity(intent);
-        });
 
         return view;
     }

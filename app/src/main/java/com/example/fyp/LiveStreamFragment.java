@@ -1,14 +1,21 @@
 package com.example.fyp;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,13 +30,14 @@ import okhttp3.Request;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
-public class LiveStreamActivity extends AppCompatActivity {
+public class LiveStreamFragment extends Fragment {
 
     private WebView webView;
     private RecyclerView chatRecyclerView;
     private ChatAdapter chatAdapter;
     private EditText messageInput;
     private Button sendButton;
+    private TextView connectionStatus;
 
     private WebSocket webSocket;
     private List<ChatMessage> chatMessages;
@@ -37,21 +45,24 @@ public class LiveStreamActivity extends AppCompatActivity {
     private static final String SOCKET_URL = "ws://13.239.37.192:8080"; // 替換為您的 WebSocket 地址
     private static final String CURRENT_USER = "CurrentUser"; // 假設當前用戶名
 
+    private Handler handler = new Handler(); // 用於延遲隱藏提示的 Handler
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_live_stream);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_live_stream, container, false);
 
         // 初始化視圖
-        webView = findViewById(R.id.webView);
-        chatRecyclerView = findViewById(R.id.chatRecyclerView);
-        messageInput = findViewById(R.id.messageInput);
-        sendButton = findViewById(R.id.sendButton);
+        webView = view.findViewById(R.id.webView);
+        chatRecyclerView = view.findViewById(R.id.chatRecyclerView);
+        messageInput = view.findViewById(R.id.messageInput);
+        sendButton = view.findViewById(R.id.sendButton);
+        connectionStatus = view.findViewById(R.id.connectionStatus);
 
         // 配置 WebView
         setupWebView();
 
-        // 配置 RecyclerView 和 WebSocket
+        // 配置聊天
         setupChatRoom();
 
         // 發送消息按鈕
@@ -59,9 +70,11 @@ public class LiveStreamActivity extends AppCompatActivity {
             String message = messageInput.getText().toString().trim();
             if (!message.isEmpty() && webSocket != null) {
                 sendMessage(message);
-                messageInput.setText(""); // 清空輸入框
+                messageInput.setText("");
             }
         });
+
+        return view;
     }
 
     private void setupWebView() {
@@ -76,7 +89,7 @@ public class LiveStreamActivity extends AppCompatActivity {
     private void setupChatRoom() {
         chatMessages = new ArrayList<>();
         chatAdapter = new ChatAdapter(chatMessages, CURRENT_USER); // 傳入當前用戶名
-        chatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        chatRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         chatRecyclerView.setAdapter(chatAdapter);
 
         OkHttpClient client = new OkHttpClient();
@@ -86,31 +99,50 @@ public class LiveStreamActivity extends AppCompatActivity {
             @Override
             public void onOpen(WebSocket webSocket, okhttp3.Response response) {
                 Log.d("WebSocket", "Connected to server");
+
+                // 更新連接狀態為「已連接」
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        showConnectionStatus("已連接", android.R.color.holo_green_dark);
+                    });
+                }
             }
 
             @Override
             public void onFailure(WebSocket webSocket, Throwable t, okhttp3.Response response) {
                 Log.e("WebSocket", "Connection failed: " + t.getMessage());
+
+                // 更新連接狀態為「連接失敗」
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        showConnectionStatus("連接失敗", android.R.color.holo_red_dark);
+                    });
+                }
             }
 
             @Override
             public void onMessage(WebSocket webSocket, String text) {
                 Log.d("WebSocket", "Raw message: " + text);
 
-                runOnUiThread(() -> {
-                    try {
-                        JSONObject jsonObject = new JSONObject(text);
-                        String user = jsonObject.getString("user");
-                        String content = jsonObject.getString("content");
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        try {
+                            JSONObject jsonObject = new JSONObject(text);
+                            String user = jsonObject.getString("user");
+                            String content = jsonObject.getString("content");
 
-                        // 更新消息列表
-                        chatMessages.add(new ChatMessage(user, content));
-                        chatAdapter.notifyItemInserted(chatMessages.size() - 1);
-                        chatRecyclerView.scrollToPosition(chatMessages.size() - 1);
-                    } catch (JSONException e) {
-                        Log.e("WebSocket", "JSON parsing error: " + e.getMessage());
-                    }
-                });
+                            // 隱藏連接狀態提示
+                            hideConnectionStatus();
+
+                            // 更新消息列表
+                            chatMessages.add(new ChatMessage(user, content));
+                            chatAdapter.notifyItemInserted(chatMessages.size() - 1);
+                            chatRecyclerView.scrollToPosition(chatMessages.size() - 1);
+                        } catch (JSONException e) {
+                            Log.e("WebSocket", "JSON parsing error: " + e.getMessage());
+                        }
+                    });
+                }
             }
         });
     }
@@ -129,12 +161,28 @@ public class LiveStreamActivity extends AppCompatActivity {
         }
     }
 
+    // 顯示連接狀態提示
+    private void showConnectionStatus(String message, int colorResId) {
+        connectionStatus.setText(message);
+        connectionStatus.setBackgroundColor(getResources().getColor(colorResId));
+        connectionStatus.setVisibility(View.VISIBLE);
+
+        // 延遲 3 秒後自動隱藏狀態
+        handler.postDelayed(this::hideConnectionStatus, 3000);
+    }
+
+    // 隱藏連接狀態提示
+    private void hideConnectionStatus() {
+        connectionStatus.setVisibility(View.GONE);
+    }
+
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         if (webSocket != null) {
-            webSocket.close(1000, "Activity destroyed");
+            webSocket.close(1000, "Fragment destroyed");
             Log.d("WebSocket", "WebSocket closed");
         }
+        handler.removeCallbacksAndMessages(null); // 清除所有延遲任務
     }
 }
