@@ -9,6 +9,7 @@ public class Tag {
     @SerializedName("tagName")
     private String tagName;
 
+    // Getter 和 Setter 方法
     public int getTagId() {
         return tagId;
     }
