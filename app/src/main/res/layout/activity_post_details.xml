@@ -35,29 +35,59 @@
             android:layout_height="wrap_content"
             android:padding="16dp" />
 
-        <!-- 點贊和留言數量 -->
+        <!-- 帖子圖片 -->
+        <ImageView
+            android:id="@+id/postImageView"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            android:layout_margin="8dp" />
+
+        <!-- 點贊和留言區域 -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:gravity="center_vertical">
 
-            <!-- 點贊數量 -->
+            <!-- Like 按鈕 -->
+            <ImageButton
+                android:id="@+id/likeButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_like_inactive"
+                android:contentDescription="Like Button"
+                />
+
+            <!-- Like 數字 -->
             <TextView
                 android:id="@+id/likeCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0 Likes"
+                android:layout_marginStart="8dp"
+                android:text="0"
                 android:textSize="16sp"
                 android:textColor="#000000"
                 android:layout_marginEnd="16dp" />
 
-            <!-- 留言數量 -->
+            <!-- Comment 圖標 -->
+            <ImageView
+                android:id="@+id/commentIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_comments"
+                android:contentDescription="Comment Icon"
+                />
+
+            <!-- Comment 數字 -->
             <TextView
                 android:id="@+id/commentCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0 Comments"
+                android:layout_marginStart="8dp"
+                android:text="0"
                 android:textSize="16sp"
                 android:textColor="#000000" />
         </LinearLayout>
@@ -130,15 +160,6 @@
                 android:padding="8dp"
                 android:background="@drawable/edittext_background"
                 android:layout_marginEnd="8dp" />
-
-            <!-- 點贊按鈕 -->
-            <ImageButton
-                android:id="@+id/likeButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:src="@drawable/ic_like_inactive"
-                android:contentDescription="Like Button" />
 
             <!-- 留言按鈕 -->
             <ImageButton

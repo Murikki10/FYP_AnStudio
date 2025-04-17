@@ -276,29 +276,39 @@ public class PostFormActivity extends AppCompatActivity {
         String title = ((EditText) findViewById(R.id.title_input)).getText().toString().trim();
         String content = richEditor.getHtml();
 
+        // 驗證輸入
         if (title.isEmpty() || content.isEmpty()) {
             Toast.makeText(this, "Please fill all fields.", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // 獲取選中的分區
         Board selectedBoard = (Board) boardSpinner.getSelectedItem();
         if (selectedBoard == null) {
             Toast.makeText(this, "Please select a board.", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // 構建 PostRequest 對象（不再傳遞 userId）
         PostRequest postRequest = new PostRequest(
-                selectedBoard.getBoardId(),
-                title,
-                content,
-                selectedTagIds, // 選中的標籤
-                selectedImageUrl,
-                123 // 假設的 userId
+                selectedBoard.getBoardId(), // 分區 ID
+                title,                      // 帖子標題
+                content,                    // 帖子內容
+                selectedTagIds,             // 選中的標籤
+                selectedImageUrl            // 已上傳圖片的 URL
         );
 
+        // 獲取 Auth Token
+        String authToken = AuthManager.getAuthToken();
+        if (authToken == null) {
+            Toast.makeText(this, "You need to log in first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 發送 API 請求
         showProgressDialog("Creating post...");
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
-        apiService.createPost(postRequest).enqueue(new Callback<PostsResponse>() {
+        apiService.createPost("Bearer " + authToken, postRequest).enqueue(new Callback<PostsResponse>() {
             @Override
             public void onResponse(Call<PostsResponse> call, Response<PostsResponse> response) {
                 hideProgressDialog();
@@ -306,7 +316,7 @@ public class PostFormActivity extends AppCompatActivity {
                     Toast.makeText(PostFormActivity.this, "Post created successfully!", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
-                    Toast.makeText(PostFormActivity.this, "Failed to create post", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PostFormActivity.this, "Failed to create post.", Toast.LENGTH_SHORT).show();
                 }
             }
 

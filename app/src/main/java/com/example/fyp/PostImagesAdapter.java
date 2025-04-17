@@ -1,5 +1,6 @@
 package com.example.fyp;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +15,9 @@ import java.util.List;
 
 public class PostImagesAdapter extends RecyclerView.Adapter<PostImagesAdapter.ImageViewHolder> {
 
-    private List<String> imageUrls; // 圖片 URL 列表
+    private List<String> imageUrls;
+    private Context context;
 
-    // Constructor
     public PostImagesAdapter(List<String> imageUrls) {
         this.imageUrls = imageUrls;
     }
@@ -24,14 +25,20 @@ public class PostImagesAdapter extends RecyclerView.Adapter<PostImagesAdapter.Im
     @NonNull
     @Override
     public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post_image, parent, false);
+        context = parent.getContext();
+        View view = LayoutInflater.from(context).inflate(R.layout.item_image, parent, false);
         return new ImageViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         String imageUrl = imageUrls.get(position);
-        Glide.with(holder.imageView.getContext()).load(imageUrl).into(holder.imageView); // 使用 Glide 加載圖片
+
+        // 使用 Glide 加載圖片
+        Glide.with(context)
+                .load(imageUrl)
+                .placeholder(R.drawable.placeholder_image) // 佔位圖
+                .into(holder.imageView);
     }
 
     @Override
@@ -39,13 +46,12 @@ public class PostImagesAdapter extends RecyclerView.Adapter<PostImagesAdapter.Im
         return imageUrls.size();
     }
 
-    // ViewHolder Class
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
 
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.postImage);
+            imageView = itemView.findViewById(R.id.imageView);
         }
     }
 }

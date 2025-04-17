@@ -7,35 +7,17 @@ public class PostRequest {
     private String title;
     private String content;
     private List<Integer> tags; // 標籤 ID 列表
-    private String imageUrl; // 單一圖片 URL
-    private int userId; // 用戶 ID
+    private String imageUrl;    // 單一圖片 URL
 
-    // 構造函數，支持 imageUrl 初始化
-    public PostRequest(int boardId, String title, String content, List<Integer> tags, String imageUrl, int userId) {
+    public PostRequest(int boardId, String title, String content, List<Integer> tags, String imageUrl) {
         this.boardId = boardId;
         this.title = title;
         this.content = content;
-
-        // 默認處理 tags 為空的情況
-        if (tags == null) {
-            this.tags = List.of(); // 默認為空列表
-        } else {
-            this.tags = tags;
-        }
-
+        this.tags = tags != null ? tags : List.of(); // 默認為空列表
         this.imageUrl = imageUrl;
-        this.userId = userId;
     }
 
-    // Getter 和 Setter 方法
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
+    // Getters 和 Setters
     public int getBoardId() {
         return boardId;
     }

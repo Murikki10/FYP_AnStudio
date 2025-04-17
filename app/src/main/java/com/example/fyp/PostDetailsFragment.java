@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ public class PostDetailsFragment extends Fragment {
     // UI 元素
     private TextView postTitle, postMetadata, postContent, likeCountTextView, commentCountTextView;
     private RecyclerView postImagesRecyclerView, commentsRecyclerView;
+    private ImageView postImageView; // 單張圖片用 ImageView
     private EditText commentInput;
     private ImageButton likeButton, commentButton;
 
@@ -59,7 +62,8 @@ public class PostDetailsFragment extends Fragment {
         postContent = view.findViewById(R.id.postContent);
         likeCountTextView = view.findViewById(R.id.likeCount);
         commentCountTextView = view.findViewById(R.id.commentCount);
-        postImagesRecyclerView = view.findViewById(R.id.postImagesRecyclerView);
+        postImageView = view.findViewById(R.id.postImageView); // 單張圖片
+        postImagesRecyclerView = view.findViewById(R.id.postImagesRecyclerView); // 多張圖片的 RecyclerView
         commentsRecyclerView = view.findViewById(R.id.commentsRecyclerView);
         commentInput = view.findViewById(R.id.commentInput);
         likeButton = view.findViewById(R.id.likeButton);
@@ -124,10 +128,20 @@ public class PostDetailsFragment extends Fragment {
                     postMetadata.setText(metadata);
                     postContent.setText(post.getContent());
 
-                    // 更新圖片數據
-                    imageUrls.clear();
-                    imageUrls.addAll(post.getImageUrls());
-                    imagesAdapter.notifyDataSetChanged();
+                    // 加載圖片
+                    String imageUrl = post.getImageUrl();
+                    if (imageUrl != null && !imageUrl.isEmpty()) {
+                        postImageView.setVisibility(View.VISIBLE);
+                        postImagesRecyclerView.setVisibility(View.GONE); // 如果只有一張圖片，隱藏 RecyclerView
+                        Glide.with(requireContext())
+                                .load(imageUrl)
+                                .placeholder(R.drawable.placeholder_image)
+                                .into(postImageView);
+                    } else if (!imageUrls.isEmpty()) {
+                        postImageView.setVisibility(View.GONE);
+                        postImagesRecyclerView.setVisibility(View.VISIBLE); // 如果有多張圖片，顯示 RecyclerView
+                        imagesAdapter.notifyDataSetChanged();
+                    }
 
                     // 更新點贊數
                     likeCount = post.getLikeCount();
@@ -135,16 +149,18 @@ public class PostDetailsFragment extends Fragment {
 
                     // 獲取點贊狀態
                     fetchLikeStatus();
+                } else if (response.code() == 404) {
+                    Toast.makeText(requireContext(), "Post not found.", Toast.LENGTH_SHORT).show();
+                    requireActivity().onBackPressed(); // 返回上一個頁面
                 } else {
-                    Toast.makeText(requireContext(), "Failed to load post details", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Failed to load post details: " + response.message());
+                    Toast.makeText(requireContext(), "Failed to load post details.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Post> call, Throwable t) {
                 Log.e(TAG, "Error loading post details: " + t.getMessage());
-                Toast.makeText(requireContext(), "Error loading post details", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Error loading post details.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -162,7 +178,7 @@ public class PostDetailsFragment extends Fragment {
 
                     // 更新評論數量
                     int commentCount = commentList.size();
-                    commentCountTextView.setText(commentCount + " Comments");
+                    commentCountTextView.setText(String.valueOf(commentCount));
                 } else {
                     Toast.makeText(requireContext(), "Failed to load comments", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Failed to load comments: " + response.message());
@@ -254,7 +270,7 @@ public class PostDetailsFragment extends Fragment {
     }
 
     private void updateLikeUI() {
-        likeCountTextView.setText(likeCount + " Likes");
+        likeCountTextView.setText(String.valueOf(likeCount));
         likeButton.setImageResource(isLiked ? R.drawable.ic_like_active : R.drawable.ic_like_inactive);
     }
 }

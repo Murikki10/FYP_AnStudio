@@ -83,7 +83,10 @@ public interface ApiService {
 
     // 創建帖子
     @POST("/api/posts")
-    Call<PostsResponse> createPost(@Body PostRequest postRequest);
+    Call<PostsResponse> createPost(
+            @Header("Authorization") String authToken, // 傳遞 Authorization 標頭
+            @Body PostRequest postRequest              // 傳遞 PostRequest 物件
+    );
 
     @GET("/api/tags")
     Call<List<Tag>> getTags();
