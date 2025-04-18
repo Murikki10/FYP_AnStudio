@@ -38,6 +38,7 @@ public class ImagePopupDialog extends DialogFragment {
         if (imageUrl != null) {
             Glide.with(requireContext())
                     .load(imageUrl)
+                    .override(1080, 1920) // 限制圖片大小
                     .placeholder(R.drawable.placeholder_image)
                     .into(popupImageView);
         }
@@ -53,7 +54,11 @@ public class ImagePopupDialog extends DialogFragment {
         super.onStart();
         Dialog dialog = getDialog();
         if (dialog != null && dialog.getWindow() != null) {
-            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            // 設置窗口大小為屏幕的 90%
+            int screenWidth = getResources().getDisplayMetrics().widthPixels;
+            int screenHeight = getResources().getDisplayMetrics().heightPixels;
+
+            dialog.getWindow().setLayout((int) (screenWidth * 0.9), (int) (screenHeight * 0.9));
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
     }
