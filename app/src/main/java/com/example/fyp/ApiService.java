@@ -5,6 +5,8 @@ import com.google.gson.JsonObject;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -46,7 +48,7 @@ public interface ApiService {
     // ========= 帖子相關 API =========
     @GET("/api/posts")
     Call<ApiResponse> getPosts(
-            @Query("boardId") int boardId,
+            @Query("boardId") @Nullable Integer boardId,
             @Query("page") int page,
             @Query("limit") int limit
     );

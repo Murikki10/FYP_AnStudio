@@ -7,48 +7,91 @@
     android:padding="8dp"
     android:background="?attr/selectableItemBackground">
 
+    <!-- 帖子標題 -->
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Post Title"
         android:textSize="16sp"
-        android:padding="8dp"
-        />
+        android:textStyle="bold"
+        android:paddingBottom="8dp" />
 
+    <!-- 帖子內容 -->
     <TextView
         android:id="@+id/contentTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Post Content"
         android:textSize="14sp"
-        android:padding="8dp"
-        />
+        android:paddingBottom="8dp" />
 
-    <TextView
-        android:id="@+id/likeCountTextView"
+    <!-- 如果帖子有圖片則顯示圖片 -->
+    <ImageView
+        android:id="@+id/postImageView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+    android:layout_marginBottom="8dp" />
+
+    <!-- 下方的計數區域 -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="0 Likes"
-        android:textSize="12sp"
-        android:padding="4dp"
-        />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="8dp">
 
-    <TextView
-        android:id="@+id/commentCountTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="0 Comments"
-        android:textSize="12sp"
-        android:padding="4dp"
-        />
+        <!-- Like 圖標和數字 -->
+        <ImageView
+            android:id="@+id/likeIcon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_like_inactive"
+        android:contentDescription="Like Icon" />
 
-    <TextView
-        android:id="@+id/viewCountTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="0 Views"
-        android:textSize="12sp"
-        android:padding="4dp"
-        />
+        <TextView
+            android:id="@+id/likeCountTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="14sp"
+            android:paddingStart="4dp"
+            android:paddingEnd="16dp" />
+
+        <!-- Comment 圖標和數字 -->
+        <ImageView
+            android:id="@+id/commentIcon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_comments"
+        android:contentDescription="Comment Icon" />
+
+        <TextView
+            android:id="@+id/commentCountTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="14sp"
+            android:paddingStart="4dp"
+            android:paddingEnd="16dp" />
+
+        <!-- View 圖標和數字 -->
+        <ImageView
+            android:id="@+id/viewIcon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_views"
+        android:contentDescription="View Icon" />
+
+        <TextView
+            android:id="@+id/viewCountTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="14sp"
+            android:paddingStart="4dp" />
+    </LinearLayout>
+
 </LinearLayout>
