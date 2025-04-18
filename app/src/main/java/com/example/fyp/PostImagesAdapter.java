@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -39,6 +40,16 @@ public class PostImagesAdapter extends RecyclerView.Adapter<PostImagesAdapter.Im
                 .load(imageUrl)
                 .placeholder(R.drawable.placeholder_image) // 佔位圖
                 .into(holder.imageView);
+
+        // 點擊圖片事件：彈出放大圖片的彈窗
+        holder.imageView.setOnClickListener(v -> {
+            // 確保 context 是 AppCompatActivity，因為我們需要使用 FragmentManager
+            if (context instanceof AppCompatActivity) {
+                // 使用 ImagePopupDialog 顯示放大圖片
+                ImagePopupDialog.newInstance(imageUrl)
+                        .show(((AppCompatActivity) context).getSupportFragmentManager(), "ImagePopupDialog");
+            }
+        });
     }
 
     @Override
