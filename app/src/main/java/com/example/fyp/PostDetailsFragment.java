@@ -37,7 +37,6 @@ public class PostDetailsFragment extends Fragment {
     // UI 元素
     private TextView postTitle, postMetadata, postContent, likeCountTextView, commentCountTextView;
     private RecyclerView postImagesRecyclerView, commentsRecyclerView;
-    private ImageView postImageView; // 單張圖片用 ImageView
     private EditText commentInput;
     private ImageButton likeButton, commentButton;
 
@@ -62,7 +61,6 @@ public class PostDetailsFragment extends Fragment {
         postContent = view.findViewById(R.id.postContent);
         likeCountTextView = view.findViewById(R.id.likeCount);
         commentCountTextView = view.findViewById(R.id.commentCount);
-        postImageView = view.findViewById(R.id.postImageView); // 單張圖片
         postImagesRecyclerView = view.findViewById(R.id.postImagesRecyclerView); // 多張圖片的 RecyclerView
         commentsRecyclerView = view.findViewById(R.id.commentsRecyclerView);
         commentInput = view.findViewById(R.id.commentInput);
@@ -130,17 +128,21 @@ public class PostDetailsFragment extends Fragment {
 
                     // 加載圖片
                     String imageUrl = post.getImageUrl();
+                    imageUrls.clear(); // 清空舊的圖片列表
+
                     if (imageUrl != null && !imageUrl.isEmpty()) {
-                        postImageView.setVisibility(View.VISIBLE);
-                        postImagesRecyclerView.setVisibility(View.GONE); // 如果只有一張圖片，隱藏 RecyclerView
-                        Glide.with(requireContext())
-                                .load(imageUrl)
-                                .placeholder(R.drawable.placeholder_image)
-                                .into(postImageView);
-                    } else if (!imageUrls.isEmpty()) {
-                        postImageView.setVisibility(View.GONE);
-                        postImagesRecyclerView.setVisibility(View.VISIBLE); // 如果有多張圖片，顯示 RecyclerView
-                        imagesAdapter.notifyDataSetChanged();
+                        // 如果只有一張圖片，將其加入列表
+                        imageUrls.add(imageUrl);
+                    }
+
+                    // 更新 RecyclerView
+                    imagesAdapter.notifyDataSetChanged();
+
+                    // 如果沒有圖片，隱藏 RecyclerView
+                    if (imageUrls.isEmpty()) {
+                        postImagesRecyclerView.setVisibility(View.GONE);
+                    } else {
+                        postImagesRecyclerView.setVisibility(View.VISIBLE);
                     }
 
                     // 更新點贊數
