@@ -80,4 +80,6 @@ dependencies {
     implementation ("com.google.zxing:core:3.5.1")
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
 
+    implementation ("com.facebook.shimmer:shimmer:0.5.0")
+    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }

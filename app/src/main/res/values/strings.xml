@@ -22,4 +22,8 @@
         <item>Intermediate</item>
         <item>Advanced</item>
     </string-array>
+
+    <string name="load_more">Load More</string>
+    <string name="create_post">Create a new post</string>
+    <string name="board_scroll_view">Scrollable container for board buttons</string>
 </resources>
