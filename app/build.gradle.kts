@@ -37,6 +37,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.recyclerview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -59,4 +60,26 @@ dependencies {
     implementation (libs.circleimageview)
     implementation (libs.glide)
     annotationProcessor (libs.compiler)
+
+
+    // CameraX
+    implementation("androidx.camera:camera-core:1.4.0-alpha02")
+    implementation ("androidx.camera:camera-camera2:1.4.0-alpha02")
+    implementation ("androidx.camera:camera-lifecycle:1.4.0-alpha02")
+    implementation ("androidx.camera:camera-view:1.4.0-alpha02")
+
+    // Guava
+    implementation ("com.google.guava:guava:31.1-android")
+
+    implementation ("androidx.recyclerview:recyclerview:1.3.0")
+    implementation ("jp.wasabeef:richeditor-android:2.0.0")
+    implementation ("com.google.android.material:material:1.9.0")
+    implementation ("androidx.cardview:cardview:1.0.0")
+
+    //QR Code
+    implementation ("com.google.zxing:core:3.5.1")
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+
+    implementation ("com.facebook.shimmer:shimmer:0.5.0")
+    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }

@@ -2,86 +2,80 @@ package com.example.fyp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageButton;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView welcomeText;
-    private ImageButton navTraining;
-    private ImageButton navCommunity;
-    private ImageButton navCompetition;
-    private ImageButton navProfile;
+    private BottomNavigationView bottomNavigationView;
+    private androidx.appcompat.widget.Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main); // 使用主頁 XML 布局
 
-        // 初始化视图
-        initializeViews();
+        // 初始化 Toolbar
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        // 设置导航栏点击事件
-        setupNavBar();
-    }
+        // 初始化 BottomNavigationView
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-    private void initializeViews() {
-        // 找到页面中的控件
-        welcomeText = findViewById(R.id.welcomeText);
-
-        // 初始化导航栏按钮
-        navTraining = findViewById(R.id.nav_training);
-        navCommunity = findViewById(R.id.nav_community);
-        navCompetition = findViewById(R.id.nav_competition);
-        navProfile = findViewById(R.id.nav_profile);
-    }
-
-    private void setupNavBar() {
-        // 设置导航栏按钮的点击事件
-
-        navTraining.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, TrainingActivity.class);
-            startActivity(intent);
-        });
-
-        navCommunity.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, CommunityActivity.class);
-            startActivity(intent);
-        });
-
-        navCompetition.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, CompetitionActivity.class);
-            startActivity(intent);
-        });
-
-        // 根据登录状态设置 Profile 按钮的行为和图标
-        updateProfileButton();
-    }
-
-    private void updateProfileButton() {
-        if (LoginManager.isLoggedIn(this)) {
-            // 如果已登录，显示用户资料图标，跳转到 Profile 页面
-            navProfile.setImageResource(R.drawable.ic_profile); // 替换为已登录图标
-            navProfile.setOnClickListener(v -> {
+        // Profile Icon 的點擊邏輯
+        ImageView accountIcon = findViewById(R.id.account_icon); // 確保 XML 中有這個 ID
+        accountIcon.setOnClickListener(v -> {
+            if (AuthManager.isLoggedIn()) {
+                // 如果已登錄（檢查 AuthManager 中的令牌）
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 startActivity(intent);
-            });
-        } else {
-            // 如果未登录，显示登录图标，跳转到登录页面
-            navProfile.setImageResource(R.drawable.default_avatar); // 替换为未登录图标
-            navProfile.setOnClickListener(v -> {
+            } else {
+                // 如果未登錄，跳轉到 LoginActivity
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
-            });
-        }
-    }
+            }
+        });
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // 每次页面重新加载时更新 Profile 按钮
-        updateProfileButton();
+        // 設置導航欄點擊事件
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
+
+            if (item.getItemId() == R.id.nav_workout) {
+                // Workout 直接跳轉到 WorkoutActivity
+                Intent intent = new Intent(MainActivity.this, WorkoutActivity.class);
+                startActivity(intent);
+                return false; // 不加載 Fragment
+            } else if (item.getItemId() == R.id.nav_community) {
+                selectedFragment = new PostsListFragment();
+                toolbar.setTitle("Community");
+            } else if (item.getItemId() == R.id.nav_event) {
+                selectedFragment = new EventHomeFragment();
+                toolbar.setTitle("Event");
+            } else if (item.getItemId() == R.id.nav_home) {
+                selectedFragment = new MainFragment();
+                toolbar.setTitle("Home");
+            }   else if (item.getItemId() == R.id.live) {
+                selectedFragment = new LiveStreamFragment();
+                toolbar.setTitle("Live Stream");
+            }
+
+            // 如果選中的 Fragment 不為空，執行 Fragment 替換
+            if (selectedFragment != null) {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, selectedFragment);
+                transaction.commit();
+            }
+
+            return true;
+        });
+
+        // 預設導航項目設置為 Home
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+        toolbar.setTitle("Home");
     }
 }

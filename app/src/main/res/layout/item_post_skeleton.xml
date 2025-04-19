@@ -1,0 +1,38 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="8dp"
+    android:background="@drawable/skeleton_card_background"
+    android:padding="16dp">
+
+    <!-- 圖片占位符 -->
+    <View
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/skeleton_background"
+        android:layout_gravity="start"
+        android:layout_marginBottom="12dp"
+        android:radius="8dp" />
+
+    <!-- 標題占位符 -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:background="@drawable/skeleton_background"
+        android:layout_marginBottom="8dp" />
+
+    <!-- 內容占位符 -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:background="@drawable/skeleton_background"
+        android:layout_marginBottom="8dp" />
+
+    <!-- 按鈕或其他細節占位符 -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:background="@drawable/skeleton_background" />
+</LinearLayout>

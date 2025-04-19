@@ -1,10 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    tools:context=".LoginActivity">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,38 +22,31 @@
             android:layout_marginTop="48dp"
             android:layout_marginBottom="32dp" />
 
-        <!-- Email 輸入框 -->
+        <!-- Email -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
-            app:errorEnabled="true"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            android:hint="Email">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/emailInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:maxLines="1" />
+                android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- 密碼輸入框 -->
+        <!-- 密碼 -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Password"
-            app:errorEnabled="true"
-            app:passwordToggleEnabled="true"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_marginTop="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/passwordEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:maxLines="1" />
+                android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- 登錄按鈕 -->
@@ -65,17 +55,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="LOGIN"
-            android:textSize="16sp"
             android:layout_marginTop="24dp"
             android:backgroundTint="@color/colorPrimary"
             android:textColor="@color/white" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
+        <!-- 註冊文字提示 -->
+        <TextView
+            android:id="@+id/registerLink"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Don't have an account? Register here"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
             android:layout_gravity="center"
-            android:visibility="gone" />
+            android:clickable="true"
+            android:focusable="true" />
     </LinearLayout>
 
+    <!-- 加載指示器 -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" /> <!-- 默認隱藏 -->
 </RelativeLayout>

@@ -12,12 +12,12 @@ public class NavBarHelper {
         ImageButton navProfile = activity.findViewById(R.id.nav_profile);
 
         navTraining.setOnClickListener(v -> {
-            Intent intent = new Intent(activity, TrainingActivity.class);
+            Intent intent = new Intent(activity, WorkoutActivity.class);
             activity.startActivity(intent);
         });
 
         navCommunity.setOnClickListener(v -> {
-            Intent intent = new Intent(activity, CommunityActivity.class);
+            Intent intent = new Intent(activity, BoardListActivity.class);
             activity.startActivity(intent);
         });
 

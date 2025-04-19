@@ -1,0 +1,55 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Action Selector Spinner -->
+    <Spinner
+        android:id="@+id/action_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Capture Status Text -->
+    <TextView
+        android:id="@+id/capture_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Status: Ready to capture"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Camera Preview -->
+    <androidx.camera.view.PreviewView
+        android:id="@+id/camera_preview"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Start Capture Button -->
+    <Button
+        android:id="@+id/start_capture_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start Capture"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Finish Button -->
+    <Button
+        android:id="@+id/finish_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Finish"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Result Display Text -->
+    <TextView
+        android:id="@+id/result_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Results will be displayed here."
+        android:textSize="16sp"
+        android:layout_marginTop="16dp" />
+</LinearLayout>

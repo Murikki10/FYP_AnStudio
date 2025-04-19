@@ -1,11 +1,10 @@
 package com.example.fyp;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +20,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText emailInput; // Email 輸入框
     private TextInputEditText passwordInput; // 密碼輸入框
     private ProgressBar progressBar; // 進度條
+    private TextView registerLink; // 註冊連結
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +31,16 @@ public class LoginActivity extends AppCompatActivity {
         emailInput = findViewById(R.id.emailInputEditText); // 確保 ID 和 XML 文件一致
         passwordInput = findViewById(R.id.passwordEditText);
         progressBar = findViewById(R.id.progressBar);
+        registerLink = findViewById(R.id.registerLink);
 
         // 設置登錄按鈕的點擊事件
         findViewById(R.id.loginButton).setOnClickListener(v -> handleLogin());
+
+        // 註冊連結點擊事件，跳轉到註冊頁面
+        registerLink.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void handleLogin() {
@@ -112,13 +119,12 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
-    // 保存登錄狀態到 SharedPreferences
+    // 保存登錄狀態到 AuthManager
     private void saveLoginState(LoginResponse loginResponse) {
-        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("is_logged_in", true);
-        editor.putString("auth_token", loginResponse.getToken()); // 保存認證 Token
-        editor.putString("user_email", loginResponse.getUser().getEmail()); // 保存用戶 Email（假設 UserData 包含 Email）
-        editor.apply();
+        // 使用 AuthManager 保存令牌和用戶數據
+        AuthManager.saveAuthToken(
+                loginResponse.getToken(), // 保存返回的令牌
+                loginResponse.getUser().getEmail() // 保存用戶 Email
+        );
     }
 }
