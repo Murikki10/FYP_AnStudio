@@ -6,6 +6,7 @@ public class UserProfileUpdateRequest {
     private String lastName;
     private String email;
     private String phone;
+    private String avatarUrl;
 
     public UserProfileUpdateRequest(String firstName, String lastName, String email, String phone) {
         this.firstName = firstName;
@@ -44,5 +45,9 @@ public class UserProfileUpdateRequest {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }

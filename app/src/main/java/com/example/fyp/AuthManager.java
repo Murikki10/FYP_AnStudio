@@ -14,6 +14,7 @@ public class AuthManager {
     private static final String KEY_LAST_NAME = "last_name"; // 新增 Key
     private static final String KEY_PHONE = "phone"; // 新增 Key
     private static Context appContext;
+    private static final String KEY_AVATAR_URL = "avatar_url";
 
     // 初始化 AuthManager（在 Application 中調用）
     public static void init(Context context) {
@@ -93,5 +94,20 @@ public class AuthManager {
         userEditor.apply();
 
         Log.d("AuthManager", "Logout called. All preferences cleared.");
+    }
+
+    // 保存头像 URL
+    public static void saveAvatarUrl(String avatarUrl) {
+        SharedPreferences sharedPreferences = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_AVATAR_URL, avatarUrl);
+        editor.apply();
+        Log.d("AuthManager", "Avatar URL saved: " + avatarUrl);
+    }
+
+    // 获取头像 URL
+    public static String getAvatarUrl() {
+        SharedPreferences sharedPreferences = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_AVATAR_URL, null);
     }
 }

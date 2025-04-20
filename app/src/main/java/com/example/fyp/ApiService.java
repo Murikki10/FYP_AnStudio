@@ -13,6 +13,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -30,20 +32,38 @@ public interface ApiService {
     @POST("api/auth/login")
     Call<LoginResponse> loginUser(@Body LoginRequest loginRequest);
 
-    @PUT("api/users/profile")
-    Call<ResponseBody> updateProfile(
+    @Multipart
+    @POST("/api/user/profile-picture")
+    Call<JsonObject> uploadProfilePicture(@Part MultipartBody.Part profilePicture);
+    @POST("/api/user/update-profile")
+    Call<JsonObject> updateUserProfile(
             @Header("Authorization") String token,
-            @Body UserProfileUpdateRequest request
+            @Body JsonObject userProfile
     );
+    @GET("user/training-records")
+    Call<List<String>> getTrainingRecords(@Header("Authorization") String token);
 
+    @GET("api/user/posts")
+    Call<UserPostsResponse> getUserPosts(@Header("Authorization") String token);
     @POST("api/user/update-password")
     Call<ResponseBody> updatePassword(
             @Header("Authorization") String token,
             @Body UpdatePasswordRequest request
     );
+    @GET("/api/auth/check")
+    Call<ResponseBody> checkFieldAvailability(
+            @Query("field") String field,
+            @Query("value") String value
+    );
+
+        @GET("/api/users/profile")
+        Call<UserProfileResponse> getUserProfiles(@Header("Authorization") String token);
 
     @GET("api/user/profile")
     Call<UserProfileResponse> getUserProfile(@Header("Authorization") String token);
+
+    @GET("/api/user/posts/count")
+    Call<PostCountResponse> getPostCount(@Header("Authorization") String token);
 
     // ========= 帖子相關 API =========
     @GET("/api/posts")
@@ -184,12 +204,6 @@ public interface ApiService {
     @POST("/api/events/{eventId}/register")
     Call<ResponseBody> registerEvent(@Path("eventId") int eventId, @Body RequestBody requestBody);
 
-    // 獲取活動的報名記錄
-    @GET("/api/events/{eventId}/registrations")
-    Call<List<RegistrationResponse>> getEventRegistrations(
-            @Header("Authorization") String token,
-            @Path("eventId") int eventId
-    );
 
     //獲取用戶註冊的活動列表
     @GET("api/users/registered-events")

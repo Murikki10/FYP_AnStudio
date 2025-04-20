@@ -150,4 +150,9 @@ public class Post {
     public void setImageUrls(List<String> imageUrls) {
         this.imageUrls = imageUrls;
     }
+    @Override
+    public String toString() {
+        // 返回帖子的標題
+        return title != null ? title : "No Title";
+    }
 }
