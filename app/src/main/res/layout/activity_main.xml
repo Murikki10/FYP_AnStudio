@@ -13,7 +13,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        android:background="?attr/colorPrimary"
+        android:background="@color/blue1"
         android:elevation="4dp"
         android:titleTextColor="@android:color/white"
         app:title="Title"
@@ -41,7 +41,7 @@
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/blue1"
         app:menu="@menu/main_nav" />
 
 </LinearLayout>
