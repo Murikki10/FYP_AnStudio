@@ -44,6 +44,7 @@
         <activity android:name=".ChangePasswordActivity" />
         <activity android:name=".PostFormActivity"/>
         <activity android:name=".SearchActivity"/>
+        <activity android:name=".UserPostsActivity"/>
         <activity android:name=".WorkoutActivity" />
         <activity android:name=".YogaVideoActivity" />
         <activity android:name=".HIITVideoActivity" />

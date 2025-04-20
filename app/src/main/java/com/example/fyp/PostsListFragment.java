@@ -137,14 +137,28 @@ public class PostsListFragment extends Fragment {
      */
     private void setupSwipeRefreshListener() {
         swipeRefreshLayout.setOnRefreshListener(() -> {
+            // 检查 RecyclerView 是否滚动到顶部
             if (postsRecyclerView.canScrollVertically(-1)) {
+                // 如果不能滚动到顶部，取消刷新
                 swipeRefreshLayout.setRefreshing(false);
                 return;
             }
 
+            // 如果在顶部，执行刷新逻辑
             currentPage = 1;
             postList.clear();
             fetchPosts(currentPage);
+        });
+
+        // 当滑动时动态禁用或启用 SwipeRefreshLayout
+        postsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                // 如果向下滚动，禁用刷新；如果在顶部，启用刷新
+                swipeRefreshLayout.setEnabled(!postsRecyclerView.canScrollVertically(-1));
+            }
         });
     }
 

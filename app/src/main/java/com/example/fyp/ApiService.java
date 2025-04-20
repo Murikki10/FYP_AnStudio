@@ -35,7 +35,11 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Body UserProfileUpdateRequest request
     );
+    @GET("user/training-records")
+    Call<List<String>> getTrainingRecords(@Header("Authorization") String token);
 
+    @GET("api/user/posts")
+    Call<UserPostsResponse> getUserPosts(@Header("Authorization") String token);
     @POST("api/user/update-password")
     Call<ResponseBody> updatePassword(
             @Header("Authorization") String token,
@@ -48,6 +52,9 @@ public interface ApiService {
     );
     @GET("api/user/profile")
     Call<UserProfileResponse> getUserProfile(@Header("Authorization") String token);
+
+    @GET("/api/user/posts/count")
+    Call<PostCountResponse> getPostCount(@Header("Authorization") String token);
 
     // ========= 帖子相關 API =========
     @GET("/api/posts")
