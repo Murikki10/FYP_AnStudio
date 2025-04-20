@@ -18,6 +18,10 @@ public class Board {
 
     @SerializedName("isFollowed")
     private int isFollowed; // 使用 int 來映射數字類型的 isFollowed
+    public Board(int boardId, String boardName) {
+        this.boardId = boardId;
+        this.boardName = boardName;
+    }
 
     // Getters 和 Setters
     public int getBoardId() {
