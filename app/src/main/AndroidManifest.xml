@@ -61,9 +61,7 @@
         <activity android:name=".TermsOfServiceActivity"/>
         <activity android:name=".AnalysisActivity"/>
         <activity android:name=".BoardListActivity"/>
-
-
-
+        <activity android:name=".UserProfileActivity" />
 
     </application>
 

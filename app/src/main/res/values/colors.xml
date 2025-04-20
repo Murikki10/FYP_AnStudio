@@ -20,4 +20,6 @@
     <color name="backgroundColor">#F5F5F5</color>
     <color name="teal_700">#00796B</color>
     <color name="blue1">#F0F8FF</color>
+    <color name="gray_700">#616161</color>
+    <color name="light_gray">#EEEEEE</color>
 </resources>

@@ -32,6 +32,16 @@ public interface ApiService {
     @POST("api/auth/login")
     Call<LoginResponse> loginUser(@Body LoginRequest loginRequest);
 
+    // 模糊搜索用戶
+    @GET("/api/users/search")
+    Call<List<UserProfile>> searchUsers(
+            @Query("query") String query // 搜索關鍵字
+    );
+
+    // 通過 userId 獲取指定用戶的資料
+    @GET("api/users/{userId}/profile")
+    Call<UserProfileResponse> getUserProfile(@Header("Authorization") String token, @Path("userId") int userId);
+
     @Multipart
     @POST("/api/user/profile-picture")
     Call<JsonObject> uploadProfilePicture(@Part MultipartBody.Part profilePicture);
