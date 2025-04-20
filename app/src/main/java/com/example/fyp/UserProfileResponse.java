@@ -4,7 +4,11 @@ public class UserProfileResponse {
 
     private boolean success;
     private UserProfile data;
+    private int userId;
 
+    public int getUserId() {
+        return userId;
+    }
     public boolean isSuccess() {
         return success;
     }
@@ -19,10 +23,13 @@ public class UserProfileResponse {
     private String lastName;
     private String phone;
     private String gender;
+    private UserProfile user;
 
     // Getters and setters
     public String getUserName() { return userName; }
     public String getEmail() { return email; }
+
+    public UserProfile getUser() {return user;}
     public String getAvatarUrl() { return avatarUrl; }
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
@@ -43,6 +50,9 @@ class UserProfile {
     private String firstName; // 添加字段
     private String lastName;  // 添加字段
     private String gender;    // 添加字段
+    private String visibility; // 新增字段
+    private String backgroundUrl; // 新增字段
+    private String createdAt; // 新增字段
 
     public int getUserId() {
         return userId;
@@ -89,5 +99,17 @@ class UserProfile {
 
     public String getGender() {
         return gender;
+    }
+
+    public String getVisibility() { // 新增 getter
+        return visibility;
+    }
+
+    public String getBackgroundUrl() { // 新增 getter
+        return backgroundUrl;
+    }
+
+    public String getCreatedAt() { // 新增 getter
+        return createdAt;
     }
 }
