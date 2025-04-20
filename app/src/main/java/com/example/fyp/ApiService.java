@@ -41,7 +41,11 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Body UpdatePasswordRequest request
     );
-
+    @GET("/api/auth/check")
+    Call<ResponseBody> checkFieldAvailability(
+            @Query("field") String field,
+            @Query("value") String value
+    );
     @GET("api/user/profile")
     Call<UserProfileResponse> getUserProfile(@Header("Authorization") String token);
 
@@ -184,12 +188,6 @@ public interface ApiService {
     @POST("/api/events/{eventId}/register")
     Call<ResponseBody> registerEvent(@Path("eventId") int eventId, @Body RequestBody requestBody);
 
-    // 獲取活動的報名記錄
-    @GET("/api/events/{eventId}/registrations")
-    Call<List<RegistrationResponse>> getEventRegistrations(
-            @Header("Authorization") String token,
-            @Path("eventId") int eventId
-    );
 
     //獲取用戶註冊的活動列表
     @GET("api/users/registered-events")

@@ -45,13 +45,11 @@ dependencies {
     implementation (libs.converter.gson)
     implementation(libs.activity)
     implementation (libs.jbcrypt)
-    implementation (libs.material.v140)
     implementation (libs.logging.interceptor)
     implementation (libs.okhttp)
     implementation (libs.material.v190)
     implementation (libs.logging.interceptor.v491)
     implementation (libs.gson)
-    implementation (libs.material.v150)
 
     // AndroidX
     implementation (libs.appcompat.v161)
@@ -73,7 +71,6 @@ dependencies {
 
     implementation ("androidx.recyclerview:recyclerview:1.3.0")
     implementation ("jp.wasabeef:richeditor-android:2.0.0")
-    implementation ("com.google.android.material:material:1.9.0")
     implementation ("androidx.cardview:cardview:1.0.0")
 
     //QR Code

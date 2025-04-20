@@ -225,7 +225,7 @@ public class PostsListFragment extends Fragment {
                     postsAdapter.notifyDataSetChanged();
 
                     if (newPosts.size() < 10) {
-                        Toast.makeText(requireContext(), "No More Post", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "All Post Has Been Loaded", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(requireContext(), "Failed to load posts", Toast.LENGTH_SHORT).show();
