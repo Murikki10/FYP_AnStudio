@@ -13,6 +13,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -30,10 +32,13 @@ public interface ApiService {
     @POST("api/auth/login")
     Call<LoginResponse> loginUser(@Body LoginRequest loginRequest);
 
-    @PUT("api/users/profile")
-    Call<ResponseBody> updateProfile(
+    @Multipart
+    @POST("/api/user/profile-picture")
+    Call<JsonObject> uploadProfilePicture(@Part MultipartBody.Part profilePicture);
+    @POST("/api/user/update-profile")
+    Call<JsonObject> updateUserProfile(
             @Header("Authorization") String token,
-            @Body UserProfileUpdateRequest request
+            @Body JsonObject userProfile
     );
     @GET("user/training-records")
     Call<List<String>> getTrainingRecords(@Header("Authorization") String token);
@@ -50,6 +55,10 @@ public interface ApiService {
             @Query("field") String field,
             @Query("value") String value
     );
+
+        @GET("/api/users/profile")
+        Call<UserProfileResponse> getUserProfiles(@Header("Authorization") String token);
+
     @GET("api/user/profile")
     Call<UserProfileResponse> getUserProfile(@Header("Authorization") String token);
 
