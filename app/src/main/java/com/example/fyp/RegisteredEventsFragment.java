@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,7 +32,7 @@ public class RegisteredEventsFragment extends Fragment {
     private TextView noEventsTextView;
 
     public RegisteredEventsFragment() {
-        // 空的构造函数
+        // 空的構造函數
     }
 
     @Nullable
@@ -41,20 +40,7 @@ public class RegisteredEventsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_registered_events, container, false);
 
-        // 初始化 Toolbar
-        androidx.appcompat.widget.Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar); // 设置为 ActionBar
-        if (((AppCompatActivity) requireActivity()).getSupportActionBar() != null) {
-            ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true); // 启用返回按钮
-            ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false); // 隐藏默认标题
-        }
-
-        // 处理导航返回事件
-        toolbar.setNavigationOnClickListener(v -> {
-            requireActivity().onBackPressed(); // 返回上一层
-        });
-
-        // 初始化其他视图
+        // 初始化視圖
         progressBar = view.findViewById(R.id.progressBar);
         noEventsTextView = view.findViewById(R.id.noEventsTextView);
         recyclerView = view.findViewById(R.id.recyclerViewEvents);
@@ -68,13 +54,10 @@ public class RegisteredEventsFragment extends Fragment {
         return view;
     }
 
-    /**
-     * 点击活动时跳转到活动详情页面
-     */
     private void onEventClick(Event event) {
         Bundle bundle = new Bundle();
         bundle.putInt("event_id", event.getEventId());
-        bundle.putString("qr_code", event.getQrCode()); // 传递 QR Code 给详情页
+        bundle.putString("qr_code", event.getQrCode());
 
         EventDetailsFragment fragment = new EventDetailsFragment();
         fragment.setArguments(bundle);
@@ -86,36 +69,27 @@ public class RegisteredEventsFragment extends Fragment {
                 .commit();
     }
 
-    /**
-     * 从后端获取注册的活动列表
-     */
     private void fetchRegisteredEvents() {
-        // 创建 API Service 实例
         ApiService apiService = ApiClient.getRetrofitInstance().create(ApiService.class);
 
-        // 从本地存储中获取 Token
         String token = getAuthToken();
         if (token == null) {
             showToast("Authentication token is missing. Please log in again.");
             return;
         }
 
-        // 显示加载进度条
         showLoading(true);
 
-        // 发送请求获取注册活动
         apiService.getRegisteredEvents("Bearer " + token).enqueue(new Callback<List<Event>>() {
             @Override
             public void onResponse(Call<List<Event>> call, Response<List<Event>> response) {
-                showLoading(false); // 隐藏加载进度条
+                showLoading(false);
 
                 if (response.isSuccessful() && response.body() != null) {
-                    // 更新活动列表
                     registeredEvents.clear();
                     registeredEvents.addAll(response.body());
                     adapter.notifyDataSetChanged();
 
-                    // 显示或隐藏“无活动”消息
                     toggleNoEventsMessage(registeredEvents.isEmpty());
                 } else {
                     handleErrorResponse(response.code());
@@ -124,40 +98,28 @@ public class RegisteredEventsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<Event>> call, Throwable t) {
-                showLoading(false); // 隐藏加载进度条
+                showLoading(false);
                 showToast("Error: Unable to connect to server. Please check your network.");
             }
         });
     }
 
-    /**
-     * 获取本地存储中的认证 Token
-     */
     private String getAuthToken() {
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("auth_prefs", Context.MODE_PRIVATE);
         return sharedPreferences.getString("auth_token", null);
     }
 
-    /**
-     * 显示或隐藏加载进度条
-     */
     private void showLoading(boolean isLoading) {
         progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
         recyclerView.setVisibility(isLoading ? View.GONE : View.VISIBLE);
-        noEventsTextView.setVisibility(View.GONE); // 加载时隐藏无活动消息
+        noEventsTextView.setVisibility(View.GONE);
     }
 
-    /**
-     * 显示或隐藏“无活动”消息
-     */
     private void toggleNoEventsMessage(boolean show) {
         noEventsTextView.setVisibility(show ? View.VISIBLE : View.GONE);
         recyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
-    /**
-     * 处理 HTTP 错误响应
-     */
     private void handleErrorResponse(int responseCode) {
         switch (responseCode) {
             case 401:
@@ -165,7 +127,7 @@ public class RegisteredEventsFragment extends Fragment {
                 showToast("Unauthorized access. Please log in again.");
                 break;
             case 404:
-                toggleNoEventsMessage(true); // 没有找到活动时显示无活动消息
+                toggleNoEventsMessage(true);
                 break;
             default:
                 showToast("Failed to load registered events. Please try again later.");
@@ -173,9 +135,6 @@ public class RegisteredEventsFragment extends Fragment {
         }
     }
 
-    /**
-     * 显示 Toast 消息
-     */
     private void showToast(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }

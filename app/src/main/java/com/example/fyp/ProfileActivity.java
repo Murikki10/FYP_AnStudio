@@ -177,7 +177,7 @@ public class ProfileActivity extends AppCompatActivity {
                         eventListRecyclerView.setVisibility(View.VISIBLE); // 顯示 RecyclerView
                     }
                 } else {
-                    Toast.makeText(ProfileActivity.this, "Failed to load events.", Toast.LENGTH_SHORT).show();
+
                 }
             }
 

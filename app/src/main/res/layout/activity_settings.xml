@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/colorPrimary"
+        android:background="@color/blue1"
         android:elevation="4dp">
 
         <ImageButton
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Settings"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"/>
     </RelativeLayout>
@@ -47,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Account"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/blue"
                 android:textSize="14sp"
                 android:layout_marginBottom="8dp"/>
 
@@ -74,7 +74,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Notifications"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/blue"
                 android:textSize="14sp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"/>
@@ -124,7 +124,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Other"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/blue"
                 android:textSize="14sp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"/>
