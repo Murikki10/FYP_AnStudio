@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- 活動列表選項 -->
+    <item
+        android:id="@+id/menu_event_list"
+        android:title="Event List"
+        app:showAsAction="never" />
+
+    <!-- 報名記錄選項 -->
+    <item
+        android:id="@+id/menu_registered_events"
+        android:title="Registered Events"
+        app:showAsAction="never" />
+
+</menu>

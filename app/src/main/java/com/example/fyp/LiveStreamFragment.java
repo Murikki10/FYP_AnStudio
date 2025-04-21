@@ -103,7 +103,7 @@ public class LiveStreamFragment extends Fragment {
                 // 更新連接狀態為「已連接」
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
-                        showConnectionStatus("Chat Room Has Bean Connect", android.R.color.holo_green_dark);
+                        showConnectionStatus("Chat Room Has Been Connect", android.R.color.holo_green_dark);
                     });
                 }
             }
